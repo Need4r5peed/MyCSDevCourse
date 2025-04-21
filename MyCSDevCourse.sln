@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit1", "Unit1", "{A88BDCF5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit2", "Unit2", "{78A6FA62-A837-9648-DB42-46165DFFF2A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module1.Unit1.Task1", "Module\Module1\Unit1\Module1.Unit1.Task1\Module1.Unit1.Task1.csproj", "{1061E611-B8A4-4350-BCA3-10152A18BE92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Debug|x64.Build.0 = Debug|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Debug|x86.Build.0 = Debug|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Release|x64.ActiveCfg = Release|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Release|x64.Build.0 = Release|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Release|x86.ActiveCfg = Release|Any CPU
+		{1061E611-B8A4-4350-BCA3-10152A18BE92}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -33,5 +49,6 @@ Global
 		{A92F1580-4B57-E8CB-0D3A-4E7B424A47F2} = {03F5537D-C476-49BE-B694-62680CEF8949}
 		{A88BDCF5-8827-6634-0A74-9DA27B36167D} = {A92F1580-4B57-E8CB-0D3A-4E7B424A47F2}
 		{78A6FA62-A837-9648-DB42-46165DFFF2A7} = {F330E988-ABFF-4228-A872-E53D336BF125}
+		{1061E611-B8A4-4350-BCA3-10152A18BE92} = {E2F7266B-F9E0-4E76-962B-EAC17D109FC5}
 	EndGlobalSection
 EndGlobal

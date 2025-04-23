@@ -3,32 +3,35 @@ on:
   push:
     branches: [master]
     paths:
-      - 'Modules/Module9/Unit6/Module9.Unit6.FinalTask1/**'
-      - 'Modules/Module9/Unit6/Module9.Unit6.FinalTask2/**'
+      - 'Module/Module9/Unit6/Module9.Unit6.FinalTask1/**'
+      - 'Module/Module9/Unit6/Module9.Unit6.FinalTask2/**'
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Важно для правильного копирования файлов
 
       - name: Push Projects to FinalTasks
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-          # Клонируем целевой репозиторий (Module9.Unit6.FinalTasks)
+          # Клонируем целевой репозиторий
           git clone https://github.com/Need4r5peed/Module9.Unit6.FinalTasks.git
-          cd Module9.Unit9.FinalTasks
+          cd Module9.Unit6.FinalTasks  # Исправлено: было Unit9 вместо Unit6
           
-          # Очищаем репозиторий (или только папки Module9.Unit6.FinalTask1/Module9.Unit6.FinalTask2)
-          rm -rf *
+          # Очищаем репозиторий
+          git rm -rf *
+          git clean -fd
           
-          # Копируем проекты с сохранением структуры
+          # Копируем проекты
           mkdir -p Module9.Unit6.FinalTask1 Module9.Unit6.FinalTask2
-          cp -r ../Module/Module9/Unit6/Module9.Unit6.FinalTask1/* ./Module9.Unit6.FinalTask1/
-          cp -r ../Module/Module9/Unit6/Module9.Unit6.FinalTask2/* ./Module9.Unit6.FinalTask2/
+          cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1/"* ./Module9.Unit6.FinalTask1/
+          cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2/"* ./Module9.Unit6.FinalTask2/
           
           # Пушим изменения
           git add .
           git commit -m "Auto-sync: Module9.Unit6.FinalTask1 and Module9.Unit6.FinalTask2 from Module9/Unit6"
-          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git master
+          git push https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git master

@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Важно для правильного копирования файлов
+          fetch-depth: 0
 
       - name: Push Projects to FinalTasks
         run: |
@@ -20,13 +20,13 @@ jobs:
           
           # Клонируем целевой репозиторий
           git clone https://github.com/Need4r5peed/Module9.Unit6.FinalTasks.git
-          cd Module9.Unit6.FinalTasks  # Исправлено: было Unit9 вместо Unit6
+          cd Module9.Unit6.FinalTasks
           
-          # Очищаем репозиторий
+          # Полная очистка репозитория
           git rm -rf *
           git clean -fd
           
-          # Копируем проекты
+          # Копируем файлы (используем абсолютные пути)
           mkdir -p Module9.Unit6.FinalTask1 Module9.Unit6.FinalTask2
           cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1/"* ./Module9.Unit6.FinalTask1/
           cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2/"* ./Module9.Unit6.FinalTask2/
@@ -34,4 +34,4 @@ jobs:
           # Пушим изменения
           git add .
           git commit -m "Auto-sync: Module9.Unit6.FinalTask1 and Module9.Unit6.FinalTask2 from Module9/Unit6"
-          git push https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git master
+          git push "https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git" master

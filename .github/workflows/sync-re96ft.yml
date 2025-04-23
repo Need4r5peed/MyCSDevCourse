@@ -13,25 +13,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push Projects to FinalTasks
+      - name: Prepare and push to FinalTasks
         run: |
+          # Настройка Git
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          
-          # Клонируем целевой репозиторий
-          git clone https://github.com/Need4r5peed/Module9.Unit6.FinalTasks.git
-          cd Module9.Unit6.FinalTasks
-          
-          # Полная очистка репозитория
-          git rm -rf *
-          git clean -fd
-          
-          # Копируем файлы (используем абсолютные пути)
+
+          # Создаём временную папку и клонируем целевой репозиторий
+          mkdir -p ../target-repo
+          git clone https://github.com/Need4r5peed/Module9.Unit6.FinalTasks.git ../target-repo
+          cd ../target-repo
+
+          # Создаём структуру папок и копируем файлы
           mkdir -p Module9.Unit6.FinalTask1 Module9.Unit6.FinalTask2
           cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1/"* ./Module9.Unit6.FinalTask1/
           cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2/"* ./Module9.Unit6.FinalTask2/
-          
-          # Пушим изменения
+
+          # Первый коммит (если репозиторий пустой)
+          if [ ! -f README.md ]; then
+            echo "# Module9 Final Tasks" > README.md
+            git add README.md
+          fi
+
+          # Фиксируем изменения
           git add .
-          git commit -m "Auto-sync: Module9.Unit6.FinalTask1 and Module9.Unit6.FinalTask2 from Module9/Unit6"
+          git commit -m "Auto-sync: Projects from Module9/Unit6"
           git push "https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git" master

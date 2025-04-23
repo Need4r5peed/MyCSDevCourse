@@ -13,34 +13,34 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Prepare and push to FinalTasks
+      - name: Push to FinalTasks
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # Настройка Git
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-
-          # Клонируем целевой репозиторий с токеном
-          git clone "https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git" target-repo
+          
+          # Клонируем с использованием токена
+          git clone "https://$GH_TOKEN@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git" target-repo
           cd target-repo
-
-          # Полная очистка репозитория (игнорируем ошибки)
-          git rm -rf . 2>/dev/null || true
-          git clean -fd || true
-
-          # Создаём структуру папок
+          
+          # Очищаем и копируем файлы
+          find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
           mkdir -p Module9.Unit6.FinalTask1 Module9.Unit6.FinalTask2
-
-          # Копируем файлы с проверкой
+          
           if [ -d "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1" ]; then
             cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1/"* ./Module9.Unit6.FinalTask1/
           fi
+          
           if [ -d "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2" ]; then
             cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2/"* ./Module9.Unit6.FinalTask2/
           fi
 
-          # Фиксируем изменения
+          # Фиксируем и пушим
           git add .
-          if git commit -m "Auto-sync: Projects from Module9/Unit6"; then
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Auto-sync: $(date +'%Y-%m-%d %H:%M:%S')"
             git push origin master
           else
             echo "Нет изменений для коммита"

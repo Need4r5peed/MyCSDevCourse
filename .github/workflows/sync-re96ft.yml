@@ -19,23 +19,29 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-          # Создаём временную папку и клонируем целевой репозиторий
-          mkdir -p ../target-repo
-          git clone https://github.com/Need4r5peed/Module9.Unit6.FinalTasks.git ../target-repo
-          cd ../target-repo
+          # Клонируем целевой репозиторий с токеном
+          git clone "https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git" target-repo
+          cd target-repo
 
-          # Создаём структуру папок и копируем файлы
+          # Полная очистка репозитория (игнорируем ошибки)
+          git rm -rf . 2>/dev/null || true
+          git clean -fd || true
+
+          # Создаём структуру папок
           mkdir -p Module9.Unit6.FinalTask1 Module9.Unit6.FinalTask2
-          cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1/"* ./Module9.Unit6.FinalTask1/
-          cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2/"* ./Module9.Unit6.FinalTask2/
 
-          # Первый коммит (если репозиторий пустой)
-          if [ ! -f README.md ]; then
-            echo "# Module9 Final Tasks" > README.md
-            git add README.md
+          # Копируем файлы с проверкой
+          if [ -d "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1" ]; then
+            cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask1/"* ./Module9.Unit6.FinalTask1/
+          fi
+          if [ -d "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2" ]; then
+            cp -r "$GITHUB_WORKSPACE/Module/Module9/Unit6/Module9.Unit6.FinalTask2/"* ./Module9.Unit6.FinalTask2/
           fi
 
           # Фиксируем изменения
           git add .
-          git commit -m "Auto-sync: Projects from Module9/Unit6"
-          git push "https://${{ github.token }}@github.com/Need4r5peed/Module9.Unit6.FinalTasks.git" master
+          if git commit -m "Auto-sync: Projects from Module9/Unit6"; then
+            git push origin master
+          else
+            echo "Нет изменений для коммита"
+          fi

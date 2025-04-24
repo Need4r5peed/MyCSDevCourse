@@ -1,7 +1,2 @@
 * text=auto
-*.cs text eol=lf
-*.csproj text eol=lf
-*.sln text eol=lf
-*.sh text eol=lf
-*.dll binary
-*.exe binary
+*.gitignore text eol=lf

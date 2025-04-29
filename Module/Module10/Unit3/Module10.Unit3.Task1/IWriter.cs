@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit3.Task1
 {
-    interface IWriter
+    public interface IWriter
     {
+        void Write();
     }
 }

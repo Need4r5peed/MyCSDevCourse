@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit2.Task3
 {
-    interface IWorker
+    public interface IWorker
     {
+        public void Build();
     }
 }

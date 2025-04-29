@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit3.Task2
 {
-    public class Main_Task1
+    public interface ICreatable
     {
-
-        public static void Main()
-        {
-            Console.WriteLine("Hello!");
-        }
+        void Create();
     }
 }

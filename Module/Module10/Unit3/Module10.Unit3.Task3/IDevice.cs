@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit3.Task3
 {
-    public class Main_Task1
+    public interface IDevice
     {
-
-        public static void Main()
-        {
-            Console.WriteLine("Hello!");
-        }
+        void TurnOn();
+        void TurnOff();
     }
 }

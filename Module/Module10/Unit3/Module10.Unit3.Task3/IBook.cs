@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit3.Task3
 {
-    public class Main_Task1
+    public interface IBook
     {
-
-        public static void Main()
-        {
-            Console.WriteLine("Hello!");
-        }
+        void Read();
     }
 }

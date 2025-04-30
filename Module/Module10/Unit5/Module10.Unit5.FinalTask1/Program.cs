@@ -15,6 +15,7 @@ namespace Module10.Unit5.FinalTask1
         {
             Console.WriteLine("Hello!");
 
+            //
             Calculator numericAdder = new NumericAdder();
             double result = numericAdder.PerformsAnArithmeticOperation(5, 3); 
             Console.WriteLine(result);

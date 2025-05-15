@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
-    public interface IWriter
+    public interface ILogger
     {
-        void WritesTheResult();
+        void Event(string nameOperation, string messageEvent);
+
+        void Error(string nameOperation, string messageError);
     }
 }

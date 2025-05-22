@@ -225,7 +225,7 @@ namespace Module10.Unit5.FinalTask1
                     {
                         case "1":
                             SavingTheResults(repeatNumber, result);
-                            _logger.Event("Сalculation", $"Результат {result} итерации {repeatNumber} сохранен.");
+                            _logger.Event("Сalculation", $"Результат {result} итерации {counter} сохранен.");
                             return choice;
                         case "2":
                             ClearingTheMemory();

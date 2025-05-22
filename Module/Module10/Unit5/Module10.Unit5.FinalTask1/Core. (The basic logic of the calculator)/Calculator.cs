@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using static Module10.Unit5.FinalTask1.ResultOfPreviousIterations;
 
 namespace Module10.Unit5.FinalTask1
 {
@@ -19,9 +20,7 @@ namespace Module10.Unit5.FinalTask1
         private readonly IWriter _writer;
         private readonly IOperationSelector _selector;
         private readonly ILogger _logger;
-        private readonly List<OperationBlock> _operationBlocks;
         private int repeatNumber = 0;
-        private static ResultOfPreviousIterations resultsStorage = new ResultOfPreviousIterations();
 
         /// <summary>
         /// Конструктор, инициализирующий калькулятор с необходимыми зависимостями
@@ -36,9 +35,6 @@ namespace Module10.Unit5.FinalTask1
             _writer = writer;
             _selector = selector;
             _logger = logger;
-            _operationBlocks = BlockRegistry.GetAvailableBlocks()
-                .Select(blockName => BlockRegistry.Create(blockName))
-                .ToList();
         }
 
         /// <summary>
@@ -57,13 +53,13 @@ namespace Module10.Unit5.FinalTask1
                 _logger.Event("Loading", $"Итерация №{repeatNumber}");
                 Thread.Sleep(1000);
 
-                var block = SelectOperationBlock();
+                var block = BlockSelection();
 
-                var operation = SelectOperation(block);
+                var operation = OperationSelection(block);
 
                 if (repeatNumber > 1)
                 {
-                    resultsStorage.ListingTheResultsOfPastIterations(resultsStorage._storageByNumbers);
+                    ListingTheResultsOfPastIterations();
                 }
 
                 var args = GetArguments(operation);
@@ -83,32 +79,32 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         /// <exception cref="FormatException">При неверном формате чисел</exception>
         /// <exception cref="KeyNotFoundException">При выборе несуществующей операции</exception>
-        private OperationBlock SelectOperationBlock()
+        private OperationBlock BlockSelection()
         {
             while (true)
             {
                 try
                 {
                     // Вывод списка доступных блоков
-                    var availableBlockNames = _operationBlocks.Select(b => b.BlockName);
+                    var availableBlockNames = BlockRegistry.GetAvailableBlocks();
                     _logger.Event("Selection", "Загрузка блоков...");
                     Thread.Sleep(1000);
                     _writer.WriteMessage("Доступные блоки операций:");
                     _writer.WriteAvailableBlocks(availableBlockNames);
 
                     // Выбор пользователя через ввод названия блока в консоль
-                    var blockName = _selector.SelectOperationBlock();
+                    var blockName = _selector.BlockSelection();
                     _logger.Event("Selection", $"Поиск блока: {blockName}");
                     Thread.Sleep(1000);
 
                     // Expertise!
-                    BlockNotFoundExpertiseException.Expertise(blockName, _operationBlocks);
+                    BlockNotFoundExpertiseException.Expertise(blockName, BlockRegistry._blockRegistry);
 
                     _logger.Event("Selection", $"Блок '{blockName}' найден. Выбор корректен.");
                     Thread.Sleep(1000);
 
                     // Возвращаем найденный блок
-                    return _operationBlocks.First(b => b.BlockName.Equals(blockName));
+                    return BlockRegistry.GetOrCreate(blockName);
                 }
                 catch (BlockNotAvailableException ex)
                 {
@@ -118,7 +114,7 @@ namespace Module10.Unit5.FinalTask1
             }
         }
 
-        private IMathOperation SelectOperation(OperationBlock block)
+        private IMathOperation OperationSelection(OperationBlock block)
         {
             _logger.Event("Selection", $"Загрузка операций из блока '{block.BlockName}'");
             Thread.Sleep(1000);
@@ -126,20 +122,29 @@ namespace Module10.Unit5.FinalTask1
             {
                 try
                 {
+                    // 1.
+                    _logger.Event($"{nameof(OperationSelection)}", "Вывод доступных операций.");
+                    Thread.Sleep(1000);
                     _writer.WriteMessage($"Доступные операции в блоке '{block.BlockName}':");
                     _writer.WriteAvailableOperations(block.Operations.Keys);
 
-                    var operationName = _selector.SelectOperation(block.BlockName);
-                    _logger.Event("SelectOperation", $"Поиск операции: {operationName}");
+                    // 2.
+                    _logger.Event($"{nameof(OperationSelection)}", "Пользовательский ввод по выбору операции.");
+                    Thread.Sleep(1000);
+                    _writer.WriteMessage($"Выберите в введите название операции из блока '{block.BlockName}':");
+                    var operationUsersChoice = _reader.ReadOperationChoice();
+                    _logger.Event("SelectOperation", $"Поиск операции: {operationUsersChoice}");
                     Thread.Sleep(1000);
 
-                    // Expertise!
-                    OperationNotFoundExpertiseException.Expertise(operationName, block);
-                    _logger.Event("SelectOperation", $"Операция '{operationName}' доступна и готова к исполнению.");
+                    // 3. Expertise!
+                    _logger.Event($"{nameof(OperationSelection)}", $"Поиск исключений для {operationUsersChoice}.");
+                    Thread.Sleep(1000);
+                    OperationNotFoundExpertiseException.Expertise(operationUsersChoice, block);
+                    _logger.Event("SelectOperation", $"Операция '{operationUsersChoice}' доступна и готова к исполнению.");
                     Thread.Sleep(1000);
 
-                    // Возвращает найденную операцию
-                    return block.Operations[operationName];
+                    // 4. Возвращает найденную операцию
+                    return block.Operations[operationUsersChoice];
                 }
                 // Исключение при отсутствии введённого названия операции
                 catch (OperationNotAvailableException ex)
@@ -219,11 +224,11 @@ namespace Module10.Unit5.FinalTask1
                     switch (choice)
                     {
                         case "1":
-                            resultsStorage.SavingTheResults(repeatNumber, result);
+                            SavingTheResults(repeatNumber, result);
                             _logger.Event("Сalculation", $"Результат {result} итерации {repeatNumber} сохранен.");
                             return choice;
                         case "2":
-                            resultsStorage.ClearingTheMemory();
+                            ClearingTheMemory();
                             _logger.Event("Сalculation", $"Все результаты стёрты из памяти.");
                             counter = 0;
                             return choice;

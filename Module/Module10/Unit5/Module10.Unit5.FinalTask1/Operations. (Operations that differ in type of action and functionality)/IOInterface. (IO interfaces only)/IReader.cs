@@ -24,5 +24,9 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         /// <returns>Вовзращает строковое название выбранной операции</returns>
         string ReadOperationChoice();
+
+        string ReadBlockChoice();
+
+        string ReadChoice();
     }
 }

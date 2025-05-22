@@ -17,6 +17,16 @@ namespace Module10.Unit5.FinalTask1
                 throw new BlockNotFoundException(blockName);
         }
 
+        // проверка в реестре + получение делегата
+        public static void Expertise(
+            string blockName,
+            Dictionary<string, Func<OperationBlock>> blockRegistry,
+            out Func<OperationBlock> factory)
+        {
+            if (!blockRegistry.TryGetValue(blockName, out factory))
+                throw new BlockNotFoundException(blockName);
+        }
+
         // Проверка в доступных операциях (по IEnumerable<OperationBlock>)
         public static void Expertise(
             string blockName,

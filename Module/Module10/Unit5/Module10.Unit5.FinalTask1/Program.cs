@@ -26,7 +26,7 @@ namespace Module10.Unit5.FinalTask1
                 var logger = new LoggerForOperation();     // Инициализация системы логирования
                 var writer = new ConsoleWriter();          // Инициализация вывода в консоль
                 var reader = new ConsoleReader();          // Инициализация чтения ввода
-                var selector = new ConsoleOperationSelector(writer); // Инициализация выбора операций
+                var selector = new ConsoleOperationSelector(writer, reader, logger); // Инициализация выбора операций
                 var calculator = new Calculator(           // Создание калькулятора со всеми зависимостями
                     reader,
                     writer,

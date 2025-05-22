@@ -12,6 +12,7 @@ namespace Module10.Unit5.FinalTask1
     /// </summary>
     public class ConsoleWriter : IWriter
     {
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Поле-словарь названий доступных операций, преобразующий OperationType в читаемые названия
@@ -23,6 +24,11 @@ namespace Module10.Unit5.FinalTask1
             [Multiplication] = "Умножение",
             [Division] = "Деление"
         };
+
+        public ConsoleWriter(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         /// <summary>
         /// Выводит список доступных операций для выбора пользователем
@@ -59,6 +65,10 @@ namespace Module10.Unit5.FinalTask1
             }
         }
 
+        /// <summary>
+        /// Вывпод операций
+        /// </summary>
+        /// <param name="operationNames"></param>
         public void WriteAvailableOperations(IEnumerable<string> operationNames)
         {
             int i = 1;
@@ -68,6 +78,10 @@ namespace Module10.Unit5.FinalTask1
             }
         }
 
+        /// <summary>
+        /// Вывод блоков
+        /// </summary>
+        /// <param name="blockNames"></param>
         public void WriteAvailableBlocks(IEnumerable<string> blockNames)
         {
             int i = 1;
@@ -104,6 +118,21 @@ namespace Module10.Unit5.FinalTask1
         public void WriteResult(double result)
         {
             Console.WriteLine($"\nРезультат: {result}\n");
+        }
+
+        /// <summary>
+        /// Метод для калькулятора, подсчитывающий и выводящий результат в консоль
+        /// </summary>
+        /// <param name="result"></param>
+        public double CalculateAndDisplayResult(IMathOperation operation, double[] args)
+        {
+            _logger.Event($"{nameof(CalculateAndDisplayResult)}", $"Вычисление операции {operation.Name}");
+            var result = operation.Calculate(args);
+
+            _logger.Event($"{nameof(CalculateAndDisplayResult)}", $"Отображение результата: {result}");
+            WriteResult(result);
+
+            return result;
         }
     }
 }

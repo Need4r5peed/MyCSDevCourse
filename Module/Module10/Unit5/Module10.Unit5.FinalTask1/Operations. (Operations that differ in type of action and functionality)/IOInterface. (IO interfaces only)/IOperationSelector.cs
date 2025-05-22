@@ -26,7 +26,7 @@ namespace Module10.Unit5.FinalTask1
         /// <para>● <c>-</c></para>
         /// </param>
         /// <returns>Реализуемый метод должен возвращать выбранный блок операций строчного типа</returns>
-        string SelectOperationBlock();
+        string BlockSelection();
 
         /// <summary>
         /// <para>Контракт метода, которое должен:</para>
@@ -40,7 +40,7 @@ namespace Module10.Unit5.FinalTask1
         /// <para>● <c>-</c></para>
         /// </param>
         /// <returns>Реализуемый метод должен возвращать выбранную операцию строчного типа</returns>
-        string SelectOperation(string blockName);
+        string OperationSelection(string blockName);
 
         /// <summary>
         /// <para>Контракт метода, которое должен:</para>

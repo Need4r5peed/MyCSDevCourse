@@ -8,24 +8,24 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
-    public class ResultOfPreviousIterations
+    public static class ResultOfPreviousIterations
     {
-        public int _iterationNumber = 0;
-        public Dictionary<int, double> _storageByNumbers = new Dictionary<int, double>();
+        private static int _iterationNumber = 0;
+        private static Dictionary<int, double> _storageByNumbers = new Dictionary<int, double>();
 
-        public void SavingTheResults(int iterationNumber, double result)
+        public static void SavingTheResults(int iterationNumber, double result)
         {
             _storageByNumbers[iterationNumber] = result;
             _iterationNumber = iterationNumber;
         }
 
-        public void ClearingTheMemory()
+        public static void ClearingTheMemory()
         {
             _storageByNumbers.Clear();
             _iterationNumber = 0;
         }
 
-        public void ListingTheResultsOfPastIterations(Dictionary<int, double> storageByNumbers)
+        public static void ListingTheResultsOfPastIterations()
         {
             // Показываем текущее состояние словаря
             Console.WriteLine("Текущее состояние словаря:");

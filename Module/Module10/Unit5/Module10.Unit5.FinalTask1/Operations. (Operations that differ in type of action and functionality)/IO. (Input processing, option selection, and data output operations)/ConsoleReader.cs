@@ -54,5 +54,13 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         /// <returns>Возвращает строковое название выбранной операции</returns>
         public string ReadOperationChoice() => Console.ReadLine();
+
+        /// <summary>
+        /// Название элемента: ReadBlockChoice | "Выбор блока операций"
+        /// </summary>
+        /// <returns></returns>
+        public string ReadBlockChoice() => Console.ReadLine();
+
+        public string ReadChoice() => Console.ReadLine();
     }
 }

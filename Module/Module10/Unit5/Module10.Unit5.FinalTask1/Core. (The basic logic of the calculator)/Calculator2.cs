@@ -63,7 +63,7 @@ namespace Module10.Unit5.FinalTask1
                 {
                     try
                     {
-                        block = SelectOperationBlock();
+                        block = BlockSelection();
                         break;
                     }
                     catch (BlockNotAvailableException ex)
@@ -78,7 +78,7 @@ namespace Module10.Unit5.FinalTask1
                 {
                     try
                     {
-                        operation = SelectOperation(block, attemptEnter);
+                        operation = OperationSelection(block, attemptEnter);
                         break;
                     }
                     // Исключение при отсутствии введённого названия операции
@@ -135,31 +135,31 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         /// <exception cref="FormatException">При неверном формате чисел</exception>
         /// <exception cref="KeyNotFoundException">При выборе несуществующей операции</exception>
-        private OperationBlock SelectOperationBlock()
+        private OperationBlock BlockSelection()
         {
             // Вывод списка доступных блоков
-            var availableBlockNames = _operationBlocks.Select(b => b.BlockName);
+            var availableBlockNames = BlockRegistry.GetAvailableBlocks();
             _logger.Event("Selection", "Загрузка блоков...");
             Thread.Sleep(1000);
             _writer.WriteMessage("Доступные блоки операций:");
             _writer.WriteAvailableBlocks(availableBlockNames);
 
             // Выбор пользователя через ввод названия блока в консоль
-            var blockName = _selector.SelectOperationBlock();
+            var blockName = _selector.BlockSelection();
             _logger.Event("Selection", $"Поиск блока: {blockName}");
             Thread.Sleep(1000);
 
             // Expertise!
-            BlockNotFoundExpertiseException.Expertise(blockName, _operationBlocks);
+            BlockNotFoundExpertiseException.Expertise(blockName, BlockRegistry._blockRegistry);
 
             _logger.Event("Selection", $"Блок '{blockName}' найден. Выбор корректен.");
             Thread.Sleep(1000);
 
             // Возвращаем найденный блок
-            return _operationBlocks.First(b => b.BlockName.Equals(blockName));
+            return BlockRegistry.GetOrCreate(blockName);
         }
 
-        private IMathOperation SelectOperation(OperationBlock block, int attemptEnter)
+        private IMathOperation OperationSelection(OperationBlock block, int attemptEnter)
         {
 
             if (attemptEnter == 0)
@@ -172,7 +172,7 @@ namespace Module10.Unit5.FinalTask1
             _writer.WriteMessage($"Доступные операции в блоке '{block.BlockName}':");
             _writer.WriteAvailableOperations(block.Operations.Keys);
 
-            var operationName = _selector.SelectOperation(block.BlockName);
+            var operationName = _selector.OperationSelection(block.BlockName);
             _logger.Event("SelectOperation", $"Поиск операции: {operationName}");
             Thread.Sleep(1000);
 

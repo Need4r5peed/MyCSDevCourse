@@ -75,5 +75,7 @@ namespace Module10.Unit5.FinalTask1
         void WriteAvailableOperations(IEnumerable<string> operationNames);
 
         void WriteAvailableBlocks(IEnumerable<string> blockNames);
+
+        public double CalculateAndDisplayResult(IMathOperation operation, double[] args);
     }
 }

@@ -111,6 +111,12 @@ namespace Module10.Unit5.FinalTask1
                     _writer.WriteError(ex.Message);
                     _logger.Error("BlocksException", ex.Message);
                 }
+                catch (BlockNotFoundException ex)
+                {
+                    // Обработка ошибки отсутствия блока операций
+                    _writer.WriteError(ex.Message);
+                    _logger.Error("BlocksException", ex.Message);
+                }
             }
         }
 
@@ -236,7 +242,7 @@ namespace Module10.Unit5.FinalTask1
                             return choice;
                     }
                 }
-                catch (FormatException ex) 
+                catch (FormatException ex)
                 {
                     _writer.WriteError($"Некорректный формат числа: {ex.Message}");
                     _logger.Error("MemoryException", ex.Message);

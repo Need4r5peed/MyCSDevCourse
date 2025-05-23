@@ -28,6 +28,8 @@ namespace Module10.Unit5.FinalTask1
         /// <returns>Реализуемый метод должен возвращать выбранный блок операций строчного типа</returns>
         string BlockSelection();
 
+        OperationBlock BlockSelection(int i);
+
         /// <summary>
         /// <para>Контракт метода, которое должен:</para>
         /// <para>1) показывать меню операций внутри блока</para>
@@ -41,6 +43,10 @@ namespace Module10.Unit5.FinalTask1
         /// </param>
         /// <returns>Реализуемый метод должен возвращать выбранную операцию строчного типа</returns>
         string OperationSelection(string blockName);
+
+        IMathOperation OperationSelection(OperationBlock block);
+
+        double[] ArgSelection(IMathOperation operation);
 
         /// <summary>
         /// <para>Контракт метода, которое должен:</para>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Module10.Unit5.FinalTask1.ParameterOrder;
 using static Module10.Unit5.FinalTask1.PositionСhangingDelegates;
@@ -24,9 +25,9 @@ namespace Module10.Unit5.FinalTask1
             // 1. Инициализация зависимостей через делегат
             var appInitializer = () => {
                 var logger = new LoggerForOperation();     // Инициализация системы логирования
-                var writer = new ConsoleWriter();          // Инициализация вывода в консоль
+                var writer = new ConsoleWriter(logger);          // Инициализация вывода в консоль
                 var reader = new ConsoleReader();          // Инициализация чтения ввода
-                var selector = new ConsoleOperationSelector(writer, reader, logger); // Инициализация выбора операций
+                var selector = new ConsoleSelection(writer, reader, logger); // Инициализация выбора операций
                 var calculator = new Calculator(           // Создание калькулятора со всеми зависимостями
                     reader,
                     writer,
@@ -35,10 +36,10 @@ namespace Module10.Unit5.FinalTask1
                     );
 
                 return (
-                calculator, 
-                writer, 
+                calculator,
+                writer,
                 logger
-                );       
+                );
                 // Возвращение кортежа с основными компонентами Калькулятора
             };
 

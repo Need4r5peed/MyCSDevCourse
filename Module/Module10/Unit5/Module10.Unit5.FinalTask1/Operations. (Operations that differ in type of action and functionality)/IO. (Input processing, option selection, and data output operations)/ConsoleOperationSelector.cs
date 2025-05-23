@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Module10.Unit5.FinalTask1.ResultOfPreviousIterations;
 
@@ -10,7 +11,7 @@ namespace Module10.Unit5.FinalTask1
     /// <summary>
     /// Реализация операций консольного выбора
     /// </summary>
-    public class ConsoleOperationSelector : IOperationSelector
+    public class ConsoleSelection : IOperationSelector
     {
         private readonly IWriter _writer;
 
@@ -18,7 +19,7 @@ namespace Module10.Unit5.FinalTask1
 
         private readonly ILogger _logger;
 
-        public ConsoleOperationSelector(IWriter writer, IReader reader, ILogger logger)
+        public ConsoleSelection(IWriter writer, IReader reader, ILogger logger)
         {
             _writer = writer;
 
@@ -153,14 +154,14 @@ namespace Module10.Unit5.FinalTask1
             {
                 case "1":
                     SavingTheResults(repeatNumber, result);
-                    _logger.Event($"{nameof(SavingTheResultSelection)}", 
+                    _logger.Event($"{nameof(SavingTheResultSelection)}",
                         $"Результат {result} данной итерации №{counter} сохранен в память {nameof(ResultOfPreviousIterations)}.\n" +
                         $"Номер данной итерации №{counter} не изменён\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / не сброшен.\n" +
                         $"Программа калькулятора переходит к следующей итерации №{repeatNumber + 1}");
                     return choice;
                 case "2":
-                    _logger.Event($"{nameof(SavingTheResultSelection)}", 
+                    _logger.Event($"{nameof(SavingTheResultSelection)}",
                         $"Результат {result} данной итерации №{counter} не сохранен в память {nameof(ResultOfPreviousIterations)}.\n" +
                         $"Номер данной итерации №{counter} изменён на №{counter -= 1}\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / сброшен на 1 итерацию.\n" +
@@ -168,7 +169,7 @@ namespace Module10.Unit5.FinalTask1
                     return choice;
                 case "3":
                     ClearingTheMemory();
-                    _logger.Event($"{nameof(SavingTheResultSelection)}", 
+                    _logger.Event($"{nameof(SavingTheResultSelection)}",
                         $"Все результаты прошлых итераций, в том чесле результат {result} данной итерации №{counter} - \n" +
                         $"были очищены из памяти {nameof(ResultOfPreviousIterations)}.\n" +
                         $"Номер данной итерации №{counter} изменён на №{counter = 0}\n" +
@@ -187,7 +188,7 @@ namespace Module10.Unit5.FinalTask1
                         $"Программа калькулятора переходит к новой итерации №{0}");
                     return choice;
                 case "5":
-                    _logger.Event($"{nameof(SavingTheResultSelection)}", 
+                    _logger.Event($"{nameof(SavingTheResultSelection)}",
                         $"Результат {result} итерации №{counter} не будет сохранен в память {nameof(ResultOfPreviousIterations)}.\n" +
                         $"Все результаты прошлых итераций будут очищены из пямяти {nameof(ResultOfPreviousIterations)}.\n" +
                         $"Программа Калькулятора будет завершена.");

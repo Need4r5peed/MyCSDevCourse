@@ -14,7 +14,7 @@ namespace Module10.Unit5.FinalTask1
     /// Обрабатывает базовые арифметические и другие операции,
     /// сгруппированные в блоки (OperationBlock).
     /// </summary>
-    public class Calculator
+    public class Calculator3
     {
         private readonly IReader _reader;
         private readonly IWriter _writer;
@@ -25,7 +25,7 @@ namespace Module10.Unit5.FinalTask1
         /// <summary>
         /// Конструктор, инициализирующий калькулятор с необходимыми зависимостями
         /// </summary>
-        public Calculator(
+        public Calculator3(
             IReader reader,
             IWriter writer,
             IOperationSelector selector,

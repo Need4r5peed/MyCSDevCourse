@@ -127,7 +127,7 @@ namespace Module10.Unit5.FinalTask1
         public double CalculateAndDisplayResult(IMathOperation operation, double[] args)
         {
             _logger.Event($"{nameof(CalculateAndDisplayResult)}", $"Вычисление операции {operation.Name}");
-            var result = operation.Calculate(args);
+            double result = CalculationExpertiseException.Expertise(operation, args, operation.Calculate(args));
 
             _logger.Event($"{nameof(CalculateAndDisplayResult)}", $"Отображение результата: {result}");
             WriteResult(result);

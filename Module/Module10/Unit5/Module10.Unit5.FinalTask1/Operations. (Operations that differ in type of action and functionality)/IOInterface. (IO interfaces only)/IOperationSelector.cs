@@ -48,6 +48,10 @@ namespace Module10.Unit5.FinalTask1
 
         double[] ArgSelection(IMathOperation operation);
 
+        string SavingTheResultSelection(double result, ref int counter);
+
+        bool ShouldContinueSelection(string selectionOutput);
+
         /// <summary>
         /// <para>Контракт метода, которое должен:</para>
         /// <para>1) запрашивать у пользователя дальнейшее действие после вычисления</para>

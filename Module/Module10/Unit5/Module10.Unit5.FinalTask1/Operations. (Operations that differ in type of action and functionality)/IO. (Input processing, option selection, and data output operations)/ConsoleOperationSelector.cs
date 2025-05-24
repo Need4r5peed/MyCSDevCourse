@@ -134,11 +134,12 @@ namespace Module10.Unit5.FinalTask1
             return args;
         }
 
-        private string SavingTheResultSelection(int repeatNumber, double result, ref int counter)
+        public string SavingTheResultSelection(double result, ref int counter)
         {
             _logger.Event($"{nameof(SavingTheResultSelection)}", $"Вывод списка дальнейших действий с результатом {result}.");
             Thread.Sleep(1000);
 
+            _writer.WriteMessage("Ваши дальнейшие действия:");
             _writer.WriteMessage(
                 $"1 - Сохранить результат {result} данной итерации №{counter},\n" +
                 $"2 - Не сохранять результат {result} данной итерации №{counter}, но сохранить результат предыдущих итераций\n" +
@@ -148,57 +149,70 @@ namespace Module10.Unit5.FinalTask1
 
             _logger.Event($"{nameof(SavingTheResultSelection)}", $"Выбор пользователя о дальнейшем действии с результатом {result}.");
             Thread.Sleep(1000);
+            _writer.WriteMessage("Введите ниже - № дестйивя в консоль:");
             string choice = _reader.ReadChoice();
 
             switch (choice)
             {
                 case "1":
-                    SavingTheResults(repeatNumber, result);
-                    _logger.Event($"{nameof(SavingTheResultSelection)}",
-                        $"Результат {result} данной итерации №{counter} сохранен в память {nameof(ResultOfPreviousIterations)}.\n" +
+                    _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
+
+                    SavingTheResults(counter, result);
+                    _writer.WriteMessage(
+                        $"Результат {result} данной итерации №{counter} сохранен в память.\n" +
                         $"Номер данной итерации №{counter} не изменён\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / не сброшен.\n" +
-                        $"Программа калькулятора переходит к следующей итерации №{repeatNumber + 1}");
+                        $"Программа калькулятора переходит к следующей итерации №{counter + 1}");
                     return choice;
                 case "2":
-                    _logger.Event($"{nameof(SavingTheResultSelection)}",
-                        $"Результат {result} данной итерации №{counter} не сохранен в память {nameof(ResultOfPreviousIterations)}.\n" +
+                    _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
+
+                    _writer.WriteMessage(
+                        $"Результат {result} данной итерации №{counter} не сохранен в память.\n" +
                         $"Номер данной итерации №{counter} изменён на №{counter -= 1}\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / сброшен на 1 итерацию.\n" +
-                        $"Программа калькулятора переходит к новой итерации №{0}");
+                        $"Программа калькулятора переходит к новой итерации №{counter + 1}");
                     return choice;
                 case "3":
+                    _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
+
                     ClearingTheMemory();
-                    _logger.Event($"{nameof(SavingTheResultSelection)}",
+                    _writer.WriteMessage(
                         $"Все результаты прошлых итераций, в том чесле результат {result} данной итерации №{counter} - \n" +
-                        $"были очищены из памяти {nameof(ResultOfPreviousIterations)}.\n" +
+                        $"были очищены из памяти.\n" +
                         $"Номер данной итерации №{counter} изменён на №{counter = 0}\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / сброшен на 0.\n" +
-                        $"Программа калькулятора переходит к новой итерации №{0}");
+                        $"Программа калькулятора переходит к новой итерации №{counter + 1}");
                     counter = 0;
                     return choice;
                 case "4":
+                    _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
+
                     ClearingTheMemory();
-                    SavingTheResults(repeatNumber, result);
-                    _logger.Event($"{nameof(SavingTheResultSelection)}",
-                        $"Все результаты прошлых итераций были очищены из памяти {nameof(ResultOfPreviousIterations)}.\n" +
-                        $"Результат {result} данной итерации №{counter} сохранен в память {nameof(ResultOfPreviousIterations)}." +
+                    SavingTheResults(counter, result);
+                    _writer.WriteMessage(
+                        $"Все результаты прошлых итераций были очищены из памяти.\n" +
+                        $"Результат {result} данной итерации №{counter} сохранен в память." +
                         $"Номер данной итерации №{counter} изменён на №{counter = 1}\n" +
-                        $"Счётчик итераций {nameof(counter)} = {counter} / сброшен на 1.\n" +
-                        $"Программа калькулятора переходит к новой итерации №{0}");
+                        $"Счётчик итераций {nameof(counter)} = {counter} / сброшен до 1.\n" +
+                        $"Программа калькулятора переходит к новой итерации №{counter + 1}");
                     return choice;
                 case "5":
-                    _logger.Event($"{nameof(SavingTheResultSelection)}",
-                        $"Результат {result} итерации №{counter} не будет сохранен в память {nameof(ResultOfPreviousIterations)}.\n" +
-                        $"Все результаты прошлых итераций будут очищены из пямяти {nameof(ResultOfPreviousIterations)}.\n" +
+                    _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
+
+                    _writer.WriteMessage(
+                        $"Результат {result} итерации №{counter} не будет сохранен в память.\n" +
+                        $"Все результаты прошлых итераций будут очищены из пямяти.\n" +
                         $"Программа Калькулятора будет завершена.");
                     return choice;
                 default:
+                    _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
+
                     throw new FormatException();
             }
         }
 
-        private bool ShouldContinueSelection(string selectionOutput)
+        public bool ShouldContinueSelection(string selectionOutput)
         {
             var response = selectionOutput;
             _logger.Event("Continue", $"Ответ пользователя: {response}");

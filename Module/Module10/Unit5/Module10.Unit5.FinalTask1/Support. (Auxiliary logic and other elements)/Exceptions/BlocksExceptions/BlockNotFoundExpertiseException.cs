@@ -17,7 +17,9 @@ namespace Module10.Unit5.FinalTask1
                 throw new BlockNotFoundException(blockName);
         }
 
-        // проверка в реестре + получение делегата
+        // Проверка наличия фабрики в реестре для получение делегата (Func<OperationBlock>)
+        // (в дальнейшем - для создания блока операций с заданным именем в словаре (blockRegistry))
+        // и возвращения соответствующей фабрики через out-параметр
         public static void Expertise(
             string blockName,
             Dictionary<string, Func<OperationBlock>> blockRegistry,
@@ -27,7 +29,8 @@ namespace Module10.Unit5.FinalTask1
                 throw new BlockNotFoundException(blockName);
         }
 
-        // Проверка в доступных операциях (по IEnumerable<OperationBlock>)
+        // Проверка доступности блока операций с заданным именем
+        // в коллекции доступных блоков (IEnumerable<OperationBlock>)
         public static void Expertise(
             string blockName,
             IEnumerable<OperationBlock> availableBlocks)

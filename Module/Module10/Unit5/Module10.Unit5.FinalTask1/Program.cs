@@ -22,13 +22,20 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         public static void Main()
         {
-            // 1. Инициализация зависимостей через делегат
+            /// <summary>
+            /// --- Блок 1: Инициализация зависимостей через делегат ---
+            /// </summary>
             var appInitializer = () => {
-                var logger = new LoggerForOperation();     // Инициализация системы логирования
-                var writer = new ConsoleWriter(logger);          // Инициализация вывода в консоль
-                var reader = new ConsoleReader();          // Инициализация чтения ввода
-                var selector = new ConsoleSelection(writer, reader, logger); // Инициализация выбора операций
-                var calculator = new Calculator(           // Создание калькулятора со всеми зависимостями
+                // Инициализация системы логирования
+                var logger = new LoggerForOperation();
+                // Инициализация вывода в консоль
+                var writer = new ConsoleWriter(logger);
+                // Инициализация чтения ввода
+                var reader = new ConsoleReader();
+                // Инициализация выбора операций
+                var selector = new ConsoleSelection(writer, reader, logger);
+                // Создание калькулятора со своими зависимостями
+                var calculator = new Calculator(           
                     reader,
                     writer,
                     selector,
@@ -40,45 +47,50 @@ namespace Module10.Unit5.FinalTask1
                 writer,
                 logger
                 );
-                // Возвращение кортежа с основными компонентами Калькулятора
+                // Возвращение кортежа с основными компонентами калькулятора
             };
 
-            // 2. Получение инициализированных компонентов
+            /// <summary>
+            /// --- Блок 2: Получение инициализированных компонентов ---
+            /// </summary>
             var (calculator, writer, logger) = appInitializer();
+            logger.Event(
+                $"\n" +
+                $"{nameof(Main)}",
+                $"Завершение инициализации компонентов калькулятора в {nameof(appInitializer)}.");
 
-            // 3. Запуск основного цикла Калькулятора с обработкой исключений через try-catch-finally
+            /// <summary>
+            /// --- Блок 3: Запуск основного цикла калькулятора с обработкой исключений через try-catch-finally  ---
+            /// </summary>
             try
             {
-                logger.Event("...", "...");
+                logger.Event(
+                    $"\n" +
+                    $"{nameof(Main)}",
+                    $"Переход к запуску {nameof(calculator.Run)}.");
+                writer.WriteMessage($"Запуск App \"Калькулятор\".");
                 Thread.Sleep(3000);
-                logger.Event("Соединение с App... ", "...");
-                Thread.Sleep(2000);
-                logger.Event("Соединение с App... ", "Ожидание ответа.");
-                Thread.Sleep(2000);
-                logger.Event("Соединение с App... ", "Загрузка системы!");
-                Thread.Sleep(2000);
                 calculator.Run();
             }
-            catch (BlockNotFoundException ex)
-            {
-                // Обработка ошибки отсутствия блока операций
-                writer.WriteError($"Блок операций не найден: {ex.BlockName}");
-                logger.Error("FatalException", $"Ошибка инициализации. {ex.Message}");
-            }
+            // Все непредвиденные исключения:
             catch (Exception ex)
             {
-                // Обработка всех остальных непредвиденных ошибок
+                logger.Error(
+                    $"\n" +
+                    $"Исключение: {nameof(Exception)},\n" +
+                    $"Где: {nameof(calculator.Run)}",
+                    ex.Message);
                 writer.WriteError($"Непредвиденная ошибка: {ex.Message}");
-                logger.Error("FatalException", $"Ошибка: {ex}");
             }
             // Выход из App
             finally
             {
-                logger.Event("Разъединение с App", "...");
+                logger.Event(
+                    $"\n" +
+                    $"{nameof(Main)}",
+                    $"Работа после {nameof(calculator.Run)}.");
+                writer.WriteMessage($"Завершение работы App \"Калькулятор\".");
                 Thread.Sleep(3000);
-                logger.Event("Разъединение с App", "Ожидание ответа.");
-                Thread.Sleep(2000);
-                logger.Event("Разъединение с App", "Завершение работы системы.");
             }
         }
     }

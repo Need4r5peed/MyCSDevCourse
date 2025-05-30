@@ -8,6 +8,9 @@ namespace Module10.Unit5.FinalTask1
 {
     public static class OperationNotFoundExpertiseException
     {
+
+        // Проверка доступности операции с заданным именем (operationName)
+        // внутри переданного блока операций (OperationBlock).
         public static void Expertise(
             string operationName,
             OperationBlock block)

@@ -11,22 +11,40 @@ namespace Module10.Unit5.FinalTask1
 {
 
     /// <summary>
-    /// Основной класс калькулятора. Версия 2
-    /// Обрабатывает базовые арифметические и другие операции,
+    /// Основной класс калькулятора. Обрабатывает арифметические и другие операции,
     /// сгруппированные в блоки (OperationBlock).
     /// </summary>
-    public class Calculator
+    public class Calculator2
     {
+        /// <summary>
+        /// Поле-интерфейс для чтения ввода пользователя
+        /// </summary>
         private readonly IReader _reader;
+
+        /// <summary>
+        /// Поле-интерфейс для вывода сообщений
+        /// </summary>
         private readonly IWriter _writer;
+
+        /// <summary>
+        /// Поле-интерфейс для выбор операций и аргументов
+        /// </summary>
         private readonly IOperationSelector _selector;
+
+        /// <summary>
+        /// Поле-интерфейс для логирования событий и ошибок
+        /// </summary>
         private readonly ILogger _logger;
-        private int repeatNumber = 0;
+
+        /// <summary>
+        /// Поле-счётчик итераций калькулятора
+        /// </summary>
+        private int repeatNumber = 0;      
 
         /// <summary>
         /// Конструктор, инициализирующий калькулятор с необходимыми зависимостями
         /// </summary>
-        public Calculator(
+        public Calculator2(
             IReader reader,
             IWriter writer,
             IOperationSelector selector,
@@ -39,7 +57,7 @@ namespace Module10.Unit5.FinalTask1
             _logger.Event(
                 $"\n" +
                 $"{nameof(Calculator)}",
-                $"Запуск конструктора");
+                $"Запуск конструктора: зависимости успешно внедрены");
         }
 
         /// <summary>
@@ -54,6 +72,7 @@ namespace Module10.Unit5.FinalTask1
             _writer.WriteMessage($"Запуск Калькулятора");
             Thread.Sleep(1000);
 
+            // Бесконечный цикл (завершается через break или исключение)
             while (true)
             {
                 repeatNumber += 1;
@@ -64,6 +83,9 @@ namespace Module10.Unit5.FinalTask1
                 _writer.WriteMessage($"Итерация: №{repeatNumber}");
                 Thread.Sleep(1000);
 
+                /// <summary>
+                /// --- Блок 1: Выбор блока операций (OperationBlock) ---
+                /// </summary>
                 OperationBlock block;
                 _logger.Event(
                     $"\n" +
@@ -73,9 +95,11 @@ namespace Module10.Unit5.FinalTask1
                 {
                     try
                     {
+                        // Пользователь выбирает блок операций
                         block = _selector.BlockSelection(1);
                         break;
                     }
+                    // Исключение о недоступности блока операций
                     catch (BlockNotAvailableException ex)
                     {
                         _logger.Error(
@@ -86,9 +110,9 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError(ex.Message);
                         continue;
                     }
+                    // Исключение об отсутствии блока операций
                     catch (BlockNotFoundException ex)
                     {
-                        // Обработка ошибки отсутствия блока операций
                         _logger.Error(
                             $"\n" +
                             $"Исключение: {nameof(BlockNotFoundException)},\n" +
@@ -97,7 +121,7 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError(ex.Message);
                         continue;
                     }
-                    // Доп.: другие непредвиденные ошибки
+                    // Доп.: другие исключения
                     catch (Exception ex)
                     {
                         _logger.Error(
@@ -110,6 +134,9 @@ namespace Module10.Unit5.FinalTask1
                     }
                 }
 
+                /// <summary>
+                /// --- Блок 2: Выбор операции ---
+                /// </summary>
                 IMathOperation operation;
                 _logger.Event(
                     $"\n" +
@@ -119,6 +146,7 @@ namespace Module10.Unit5.FinalTask1
                 {
                     try
                     {
+                        // Пользователь выбирает операцию
                         operation = _selector.OperationSelection(block);
                         break;
                     }
@@ -133,7 +161,7 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError(ex.Message);
                         continue;
                     }
-                    // Доп.: другие непредвиденные ошибки
+                    // Доп.: другие исключения
                     catch (Exception ex)
                     {
                         _logger.Error(
@@ -146,11 +174,18 @@ namespace Module10.Unit5.FinalTask1
                     }
                 }
 
+                /// <summary>
+                /// --- Блок 3: Вывод прошлых результатов (если это не первая итерация) ---
+                /// </summary>
                 if (repeatNumber > 1)
                 {
+                    // Статический метод из ResultOfPreviousIterati
                     ListingTheResultsOfPastIterations();
                 }
 
+                /// <summary>
+                /// --- Блок 4: Ввод аргументов, вычисление и вывод результата ---
+                /// </summary>
                 double[] args;
                 _logger.Event(
                     $"\n" +
@@ -163,11 +198,14 @@ namespace Module10.Unit5.FinalTask1
                     $"Объявление {nameof(result)}");
                 while (true)
                 {
+                    // Обработка args
                     try
                     {
+                        // Пользовательский ввод аргументов
                         args = _selector.ArgSelection(operation);
                     }
-                    catch (InvalidArgumentsException ex) // Наше кастомное исключение
+                    // Исключение при некорректных аргументах
+                    catch (InvalidArgumentsException ex)
                     {
                         _logger.Error(
                             $"\n" +
@@ -177,7 +215,8 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError(ex.Message);
                         continue;
                     }
-                    catch (FormatException ex) // Ошибки парсинга чисел
+                    // Прочие ошибки парсинга чисел
+                    catch (FormatException ex) 
                     {
                         _logger.Error(
                             $"\n" +
@@ -187,7 +226,7 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError($"Некорректный формат числа: {ex.Message}");
                         continue;
                     }
-                    // Доп.: другие непредвиденные ошибки
+                    // Доп.: другие исключения
                     catch (Exception ex)
                     {
                         _logger.Error(
@@ -199,12 +238,15 @@ namespace Module10.Unit5.FinalTask1
                         throw; // Пробрасываем выше, если это какое-то другое исключение
                     }
 
+                    // Обработка result
                     try
                     {
+                        // Вычисление и вывод результата
                         result = _writer.CalculateAndDisplayResult(operation, args);
                         break;
                     }
-                    catch (CalculationException ex) // Наше кастомное исключение
+                    // Исключение при вычислении
+                    catch (CalculationException ex) 
                     {
                         _logger.Error(
                             $"\n" +
@@ -214,7 +256,7 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError(ex.Message);
                         continue;
                     }
-                    // Доп.: другие непредвиденные ошибки
+                    // Доп.: другие исключения
                     catch (Exception ex)
                     {
                         _logger.Error(
@@ -224,55 +266,32 @@ namespace Module10.Unit5.FinalTask1
                             ex.Message);
                         _writer.WriteError($"Другая ошибка: {ex.Message}");
                         throw; // Пробрасываем выше, если это какое-то другое исключение
+                        // Можно помтавить "continue;" - тогда будет возвращать к предыдущему
+                        // шагу (при недоделанных операциях).
                     }
                 }
 
-                ////Объединение с предыдущим!!!!!
-
-                //double result;
-                //_logger.Event(
-                //    $"\n" +
-                //    $"{nameof(Run)}",
-                //    $"Объявление {nameof(result)}");
-                //while (true)
-                //{
-                //    try
-                //    {
-                //        result = _writer.CalculateAndDisplayResult(operation, args);
-                //        break;
-                //    }
-                //    catch (CalculationException ex) // Наше кастомное исключение
-                //    {
-                //        _logger.Error(
-                //            $"\n" +
-                //            $"Исключение: {nameof(CalculationException)},\n" +
-                //            $"Где: {nameof(_writer.CalculateAndDisplayResult)}",
-                //            ex.Message);
-                //        _writer.WriteError(ex.Message);
-                //    }
-                //    // Доп.: другие непредвиденные ошибки
-                //    catch (Exception ex)
-                //    {
-                //        _logger.Error(
-                //            $"\n" +
-                //            $"Исключение: {nameof(Exception)},\n" +
-                //            $"Где: {nameof(_writer.CalculateAndDisplayResult)}",
-                //            ex.Message);
-                //        _writer.WriteError($"Другая ошибка: {ex.Message}");
-                //        throw; // Пробрасываем выше, если это какое-то другое исключение
-                //    }
-                //}
-
-                //DisplayResult(result);
-
+                /// <summary>
+                /// --- Блок 5: Сохранение результата и запрос на продолжение ---
+                /// </summary>
                 string memory;
+                _logger.Event(
+                    $"\n" +
+                    $"{nameof(Run)}",
+                    $"Объявление {nameof(memory)}");
                 bool choosing;
+                _logger.Event(
+                    $"\n" +
+                    $"{nameof(Run)}",
+                    $"Объявление {nameof(choosing)}");
                 while (true)
                 {
+                    // Обработка memory
                     try
                     {
                         memory = _selector.SavingTheResultSelection(result, ref repeatNumber);
                     }
+                    // Исключение некорректного формата ввода
                     catch (FormatException ex)
                     {
                         _logger.Error(
@@ -283,7 +302,7 @@ namespace Module10.Unit5.FinalTask1
                         _writer.WriteError($"Некорректный формат числа: {ex.Message}");
                         continue;
                     }
-                    // Доп.: другие непредвиденные ошибки
+                    // Доп.: другие исключения
                     catch (Exception ex)
                     {
                         _logger.Error(
@@ -295,12 +314,13 @@ namespace Module10.Unit5.FinalTask1
                         throw; // Пробрасываем выше, если это какое-то другое исключение
                     }
 
+                    // Обработка choosing
                     try
                     {
                         choosing = _selector.ShouldContinueSelection(memory);
                         break;
                     }
-                    // Доп.: другие непредвиденные ошибки
+                    // Доп.: другие исключения
                     catch (Exception ex)
                     {
                         _logger.Error(
@@ -313,6 +333,9 @@ namespace Module10.Unit5.FinalTask1
                     }
                 }
 
+                /// <summary>
+                /// --- Блок 6: Выход из цикла, если пользователь отказался продолжать ---
+                /// </summary>
                 if (!choosing) break;
             }
         }

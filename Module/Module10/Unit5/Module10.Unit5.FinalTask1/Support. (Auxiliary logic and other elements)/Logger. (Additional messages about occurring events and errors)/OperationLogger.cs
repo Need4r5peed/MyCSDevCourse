@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
-    public class LoggerForOperation : ILogger
+
+    public class OperationLogger : ILogger
     {
 
         public void Error(string nameOperation, string messageError)
         {
-            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine(
                 $"Reaction Time: {DateTime.Now},\n" +
                 $"Name Operation: {nameOperation},\n" +
@@ -19,9 +21,11 @@ namespace Module10.Unit5.FinalTask1
             Console.ResetColor();
         }
 
+
         public void Event(string nameOperation, string messageEvent)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine(
                 $"Reaction Time: {DateTime.Now},\n" +
                 $"Name Operation: {nameOperation},\n" +

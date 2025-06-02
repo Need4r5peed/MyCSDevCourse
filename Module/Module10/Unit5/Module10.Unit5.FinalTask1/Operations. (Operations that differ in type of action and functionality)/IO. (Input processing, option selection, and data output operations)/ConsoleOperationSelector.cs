@@ -9,16 +9,80 @@ using static Module10.Unit5.FinalTask1.ResultOfPreviousIterations;
 namespace Module10.Unit5.FinalTask1
 {
     /// <summary>
-    /// Реализация операций консольного выбора
+    /// Реализация операций консольного выбора процедур калькулятора
     /// </summary>
     public class ConsoleSelection : IOperationSelector
     {
+
+        /// <summary>
+        /// 
+        /// <para><b>● Название элемента:</b></para>
+        /// <para><see cref="_writer"/> | Реализация интерфейса для вывода данных.</para>
+        /// 
+        /// <para><b>● Тип элемента:</b></para>
+        /// <para>Приватное(<see langword="private"/>) поле только для чтения(<see langword="readonly"/>).</para>
+        /// 
+        /// <para><b>● Описание:</b></para>
+        /// <para>Содержит экземпляр класса, реализующего интерфейс <see cref="IWriter"/> для организации вывода данных.</para>
+        /// 
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// <para><b>● Дополнение:</b></para>
+        /// <list type="">
+        ///    <item><description>Инициализируется через внедрение зависимости в конструкторе.</description></item>
+        /// </list> 
+        /// </remarks>
         private readonly IWriter _writer;
 
+        /// <summary>
+        /// 
+        /// <para><b>● Название элемента:</b></para>
+        /// <para><see cref="_reader"/> | Реализация интерфейса для чтения данных.</para>
+        /// 
+        /// <para><b>● Тип элемента:</b></para>
+        /// <para>Приватное(<see langword="private"/>) поле только для чтения(<see langword="readonly"/>).</para>
+        /// 
+        /// <para><b>● Описание:</b></para>
+        /// <para>Содержит экземпляр класса, реализующего интерфейс <see cref="IReader"/> для организации чтения данных.</para>
+        /// 
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// <para><b>● Дополнение:</b></para>
+        /// <list type="">
+        ///    <item><description>Инициализируется через внедрение зависимости в конструкторе.</description></item>
+        /// </list> 
+        /// </remarks>
         private readonly IReader _reader;
 
+        /// <summary>
+        /// 
+        /// <para><b>● Название элемента:</b></para>
+        /// <para><see cref="_logger"/> | Реализация интерфейса для логирования событий.</para>
+        /// 
+        /// <para><b>● Тип элемента:</b></para>
+        /// <para>Приватное(<see langword="private"/>) поле только для чтения(<see langword="readonly"/>).</para>
+        /// 
+        /// <para><b>● Описание:</b></para>
+        /// <para>Содержит экземпляр класса, реализующего интерфейс <see cref="ILogger"/> для организации логирования событий.</para>
+        /// 
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// <para><b>● Дополнение:</b></para>
+        /// <list type="">
+        ///    <item><description>Инициализируется через внедрение зависимости в конструкторе.</description></item>
+        /// </list> 
+        /// </remarks>
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Конструктор, инициализирующий поля через внедрение зависимостей.
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="reader"></param>
+        /// <param name="logger"></param>
         public ConsoleSelection(IWriter writer, IReader reader, ILogger logger)
         {
             _writer = writer;
@@ -28,19 +92,31 @@ namespace Module10.Unit5.FinalTask1
             _logger = logger;
         }
 
-        public string BlockSelection()
-        {
-            _writer.WriteMessage("Выберите и введите название блока операций в консоль:");
-
-            return _reader.ReadBlockChoice();
-        }
-
         /// <summary>
-        /// Доработанный метод по выбору блока, готовый попасть в интерфейс.
+        /// <para>● Название элеиента:</para>
+        /// <para><see cref="BlockSelection"/> |
+        /// "Выбор блока математических операций".</para>
+        /// 
+        /// <para>● Тип элемента:</para> 
+        /// <para>контракт метода.</para>
+        /// 
+        /// <para>● Концепция, описание, принцип работы элемента:</para>
+        /// <para>Метод возвращающего типа, который должен выполнять:</para> 
+        /// <list type="number">
+        ///    <item><description>процедуру выбора доступных блоков;</description></item>
+        ///    <item><description>процедуру пользовательского ввода выбранного варианта;</description></item>
+        ///    <item><description>проццедуру поиска и проверку на исключения;</description></item>
+        ///    <item><description>возврат выбранного блока операций.</description></item>
+        /// </list> 
+        /// 
         /// </summary>
-        /// <param name="operationBlocks"></param>
-        /// <returns></returns>
-        public OperationBlock BlockSelection(int i)
+        /// 
+        /// <param name="~">
+        /// <para>Входных параметров не имеет</para>
+        /// </param>
+        /// 
+        /// <returns>Результат выбранных и найденных данных соответствующего типа <see cref="OperationBlock"/></returns>
+        public OperationBlock BlockSelection()
         {
             // Вывод списка доступных блоков
             _logger.Event($"{nameof(BlockSelection)}", "Загрузка блоков.");
@@ -78,12 +154,11 @@ namespace Module10.Unit5.FinalTask1
             return BlockRegistry.GetOrCreate(blockNameСhoice);
         }
 
-        public string OperationSelection(string blockName)
-        {
-            _writer.WriteMessage($"Выберите в введите название операции из блока '{blockName}':");
-            return _reader.ReadOperationChoice();
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
         public IMathOperation OperationSelection(OperationBlock block)
         {
             // 1.
@@ -113,6 +188,11 @@ namespace Module10.Unit5.FinalTask1
             return block.Operations[operationUsersChoice];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <returns></returns>
         public double[] ArgSelection(IMathOperation operation)
         {
             string FormatArgs(object a) => a is double[] array ? $"[{string.Join(", ", array)}]" : a.ToString();
@@ -134,6 +214,13 @@ namespace Module10.Unit5.FinalTask1
             return args;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="counter"></param>
+        /// <returns></returns>
+        /// <exception cref="FormatException"></exception>
         public string SavingTheResultSelection(double result, ref int counter)
         {
             _logger.Event($"{nameof(SavingTheResultSelection)}", $"Вывод списка дальнейших действий с результатом {result}.");
@@ -212,17 +299,16 @@ namespace Module10.Unit5.FinalTask1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectionOutput"></param>
+        /// <returns></returns>
         public bool ShouldContinueSelection(string selectionOutput)
         {
             var response = selectionOutput;
             _logger.Event("Continue", $"Ответ пользователя: {response}");
             return response == "1" || response == "2" || response == "3" || response == "4";
-        }
-
-        public bool AskForContinue()
-        {
-            _writer.WriteMessage("Продолжить? (y/n)");
-            return Console.ReadLine().ToLower() == "y";
         }
     }
 }

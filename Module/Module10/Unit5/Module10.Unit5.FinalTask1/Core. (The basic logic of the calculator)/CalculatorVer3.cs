@@ -19,7 +19,9 @@ namespace Module10.Unit5.FinalTask1
         /// <summary>
         /// Название элеиента: <see cref="_reader"/> | 
         /// "Интерфейс для чтения ввода пользователя".
+        /// 
         /// Тип элемента: поле. 
+        /// 
         /// </summary>
         private readonly IReader _reader;
 
@@ -110,7 +112,7 @@ namespace Module10.Unit5.FinalTask1
 
                 // Блок 1: Выбор блока операций
                 OperationBlock block = RetryProcedure(
-                    () => _selector.BlockSelection(1),
+                    () => _selector.BlockSelection(),
                     nameof(_selector.BlockSelection),
                     "Выбор блока операций"
                 );

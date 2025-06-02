@@ -27,7 +27,7 @@ namespace Module10.Unit5.FinalTask1
             /// </summary>
             var appInitializer = () => {
                 // Инициализация системы логирования
-                var logger = new LoggerForOperation();
+                var logger = new ProcedureLogger();
                 // Инициализация вывода в консоль
                 var writer = new ConsoleWriter(logger);
                 // Инициализация чтения ввода
@@ -80,7 +80,7 @@ namespace Module10.Unit5.FinalTask1
                     $"Исключение: {nameof(Exception)},\n" +
                     $"Где: {nameof(calculator.Run)}",
                     ex.Message);
-                writer.WriteError($"Непредвиденная ошибка: {ex.Message}");
+                writer.WriteError($"Непредвиденная ошибка App \"Калькулятор\": {ex.Message}");
             }
             // Выход из App
             finally

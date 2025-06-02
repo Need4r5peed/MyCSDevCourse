@@ -14,19 +14,27 @@ namespace Module10.Unit5.FinalTask1
     public interface IReader
     {
         /// <summary>
+        /// Читает выбор операции пользователем
+        /// </summary>
+        /// <returns>Вовзращает строковое название выбранной операции</returns>
+        string ReadOperationChoice();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        string ReadBlockChoice();
+
+        /// <summary>
         /// Читает аргументы для операции
         /// </summary>
         /// <returns>Возвращает дробный массив</returns>
         double[] ReadNumbers();
 
         /// <summary>
-        /// Читает выбор операции пользователем
+        /// 
         /// </summary>
-        /// <returns>Вовзращает строковое название выбранной операции</returns>
-        string ReadOperationChoice();
-
-        string ReadBlockChoice();
-
+        /// <returns></returns>
         string ReadChoice();
     }
 }

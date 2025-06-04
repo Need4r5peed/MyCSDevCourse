@@ -6,29 +6,28 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
-
-    public class OperationLogger : ILogger
+    class OtherActivitiesLogger: ILogger
     {
 
-        public void Error(string nameOperation, string messageError)
+        public void Error(string nameActivities, string messageError)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine(
                 $"Reaction Time: {DateTime.Now},\n" +
-                $"Name Operation: {nameOperation},\n" +
+                $"Name [OTHER] Activities: {nameActivities},\n" +
                 $"Error message: {messageError}.\n");
             Console.ResetColor();
         }
 
 
-        public void Event(string nameOperation, string messageEvent)
+        public void Event(string nameActivities, string messageEvent)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine(
                 $"Reaction Time: {DateTime.Now},\n" +
-                $"Name Operation: {nameOperation},\n" +
+                $"Name [OTHER] Activities: {nameActivities},\n" +
                 $"Operation Event: {messageEvent}.\n");
             Console.ResetColor();
         }

@@ -37,6 +37,8 @@ namespace Module10.Unit5.FinalTask1
 
         int MaxArgsCount { get; }
 
+        ILogger Logger { get; }
+
         //Контракты на методы:
 
         /// <summary>

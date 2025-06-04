@@ -30,13 +30,18 @@ namespace Module10.Unit5.FinalTask1
         internal static readonly ConcurrentDictionary<string, OperationBlock> _initializedBlocks = new();
 
         /// <summary>
+        /// 
+        /// </summary>
+        private static Func<string, ILogger> _loggerFactory;
+
+        /// <summary>
         /// <para>Статический конструктор</para>
         /// <para>● вызывается один раз при первом обращении к классу</para>
         /// <para>● инициализирует словарь с переданными в него данными</para>
         /// </summary>
-        static BlockRegistry()
+        public static void Initialize(Func<string, ILogger> loggerFactory)
         {
-            // Вызов метода для регистрации конкретного блока <BasicArithmeticBlock> под именем "basic arithmetic"
+            _loggerFactory = loggerFactory;
             Register<BasicArithmeticBlock>("basic arithmetic");
         }
 
@@ -72,11 +77,15 @@ namespace Module10.Unit5.FinalTask1
         /// <para>● <c>string</c> — string-тип строкового значения</para>
         /// <para>● <c>blockName</c> — имя параметра "Название блока математических операций"</para>
         /// </param>
-        public static void Register<T>(string blockName) where T : OperationBlock, new()
+        public static void Register<T>(string blockName) where T : OperationBlock
         {
-            // Описание процедуры регистрации - сохранения ссылки на анонимный метод (инструкции), который
-            // в будущем может создать экземпляр по указанному имени-индексатору
-            _blockRegistry[blockName] = () => new T();
+            _blockRegistry[blockName] = () =>
+            {
+                if (typeof(T) == typeof(BasicArithmeticBlock))
+                    return new BasicArithmeticBlock(_loggerFactory);
+
+                throw new InvalidOperationException($"Unsupported block type: {typeof(T)}");
+            };
         }
 
         /// <summary>

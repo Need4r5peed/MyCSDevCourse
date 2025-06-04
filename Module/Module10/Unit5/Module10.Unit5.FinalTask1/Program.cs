@@ -1,97 +1,113 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using static Module10.Unit5.FinalTask1.ParameterOrder;
-using static Module10.Unit5.FinalTask1.PositionСhangingDelegates;
+using Microsoft.Extensions.DependencyInjection;
 
-/// <summary>
-/// Главный класс приложения калькулятора.
-/// Объединяет задания 1 и 2 в одном проекте.
-/// </summary>
 namespace Module10.Unit5.FinalTask1
 {
     public class Main_FinalTask1
     {
-        /// <summary>
-        /// Точка входа в приложение.
-        /// Инициализирует зависимости и запускает основной цикл калькулятора.
-        /// </summary>
         public static void Main()
         {
-            /// <summary>
-            /// --- Блок 1: Инициализация зависимостей через делегат ---
-            /// </summary>
-            var appInitializer = () => {
-                // Инициализация системы логирования
-                var logger = new ProcedureLogger();
-                // Инициализация вывода в консоль
-                var writer = new ConsoleWriter(logger);
-                // Инициализация чтения ввода
-                var reader = new ConsoleReader();
-                // Инициализация выбора операций
-                var selector = new ConsoleSelection(writer, reader, logger);
-                // Создание калькулятора со своими зависимостями
-                var calculator = new Calculator(           
-                    reader,
-                    writer,
-                    selector,
-                    logger
-                    );
-
-                return (
-                calculator,
-                writer,
-                logger
-                );
-                // Возвращение кортежа с основными компонентами калькулятора
-            };
-
-            /// <summary>
-            /// --- Блок 2: Получение инициализированных компонентов ---
-            /// </summary>
-            var (calculator, writer, logger) = appInitializer();
-            logger.Event(
-                $"\n" +
-                $"{nameof(Main)}",
-                $"Завершение инициализации компонентов калькулятора в {nameof(appInitializer)}.");
-
-            /// <summary>
-            /// --- Блок 3: Запуск основного цикла калькулятора с обработкой исключений через try-catch-finally  ---
-            /// </summary>
+            ILogger logger = null;
             try
             {
-                logger.Event(
-                    $"\n" +
-                    $"{nameof(Main)}",
-                    $"Переход к запуску {nameof(calculator.Run)}.");
-                writer.WriteMessage($"Запуск App \"Калькулятор\".");
+                // 1. Инициализация DI-контейнера и сервисов
+                var serviceProvider = ConfigureServices();
+                var getLogger = serviceProvider.GetService<Func<string, ILogger>>(); // Получаем фабрику один раз
+                logger = getLogger("Main"); // Создаём основной логгер
+                BlockRegistry.Initialize(getLogger); // Передаём фабрику в реестр
+
+                // Основная логика
+                logger.Event(nameof(Main), "Запуск приложения 'Калькулятор'");
                 Thread.Sleep(3000);
-                calculator.Run();
+                serviceProvider.GetService<Calculator>().Run();
             }
-            // Все непредвиденные исключения:
+            // Исключение при неинициализации логгера.
+            catch (Exception ex) when (logger == null)
+            {
+                Console.Error.WriteLine($"Ошибка инициализации [ЛОГГЕРА]: {ex}");
+                Environment.Exit(1);
+            }
+            // Другие ошибки инициализации
+            catch (Exception ex) when (InitializationError(ex))
+            {
+                // Обработка ошибок инициализации
+                logger?.Error(nameof(Main), $"[Критическая] ошибка инициализации: {ex.Message}");
+                Environment.Exit(2);
+            }
             catch (Exception ex)
             {
-                logger.Error(
-                    $"\n" +
-                    $"Исключение: {nameof(Exception)},\n" +
-                    $"Где: {nameof(calculator.Run)}",
-                    ex.Message);
-                writer.WriteError($"Непредвиденная ошибка App \"Калькулятор\": {ex.Message}");
+                logger?.Error(nameof(Main), $"[ИНАЯ] ошибка: {ex.Message}");
             }
-            // Выход из App
             finally
             {
-                logger.Event(
-                    $"\n" +
-                    $"{nameof(Main)}",
-                    $"Работа после {nameof(calculator.Run)}.");
-                writer.WriteMessage($"Завершение работы App \"Калькулятор\".");
+                logger?.Error(nameof(Main), "Завершение работы приложения");
                 Thread.Sleep(3000);
             }
+        }
+
+        private static bool InitializationError(Exception ex)
+        {
+            return ex is InvalidOperationException // Исключение, когда DI-контейнер не может разрешить
+                                                   // зависимости (например, сервис не зарегистрирован)
+                   || ex is ArgumentNullException // Исключение, когда происходит передача null в критически важные методы
+                   || ex is KeyNotFoundException; // Исключение, когда происходит обращение к несуществующему ключу в словаре/реестре
+        }
+
+        private static IServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            // 1. Регистрация логгеров
+            services.AddSingleton<MainLogger>();
+            services.AddSingleton<ProcedureLogger>();
+            services.AddSingleton<OperationLogger>();
+            services.AddSingleton<OtherActivitiesLogger>();
+
+            // 2. Фабрика логгеров
+            services.AddTransient<Func<string, ILogger>>(provider => key =>
+            {
+                return key switch
+                {
+                    LoggerTypes.Main => provider.GetService<MainLogger>(),
+                    LoggerTypes.Procedure => provider.GetService<ProcedureLogger>(),
+                    LoggerTypes.Operation => provider.GetService<OperationLogger>(),
+                    _ => provider.GetService<OtherActivitiesLogger>() // Fallback
+                };
+            });
+
+            // 3. Регистрация сервисов с явным указанием зависимостей
+            services.AddTransient<IReader, ConsoleReader>();
+
+            services.AddTransient<IWriter>(provider =>
+                new ConsoleWriter(provider.GetService<Func<string, ILogger>>()(LoggerTypes.Procedure)
+                ));
+
+            services.AddTransient<IOperationSelector>(provider =>
+                new ConsoleSelection(
+                    provider.GetService<IWriter>(),
+                    provider.GetService<IReader>(),
+                    provider.GetService<Func<string, ILogger>>()(LoggerTypes.Procedure)
+                ));
+
+            services.AddTransient<Calculator>(provider =>
+                new Calculator(
+                    provider.GetService<IReader>(),
+                    provider.GetService<IWriter>(),
+                    provider.GetService<IOperationSelector>(),
+                    provider.GetService<Func<string, ILogger>>()(LoggerTypes.Procedure)
+                ));
+
+            services.AddTransient<OperationBlock>(provider =>
+                new BasicArithmeticBlock(provider.GetService<Func<string, ILogger>>()
+                ));
+
+            services.AddTransient<ISpecializedOperations>(provider =>
+                new NumericAddition(provider.GetService<Func<string, ILogger>>()(LoggerTypes.Operation)
+                ));
+
+            return services.BuildServiceProvider();
         }
     }
 }

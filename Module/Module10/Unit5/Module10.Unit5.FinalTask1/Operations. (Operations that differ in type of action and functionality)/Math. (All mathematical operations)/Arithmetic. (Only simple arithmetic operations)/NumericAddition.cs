@@ -41,6 +41,15 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         public int MaxArgsCount => 2;
 
+        private readonly ILogger _logger;
+
+        public NumericAddition(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public ILogger Logger => _logger;
+
         // Главный метод:
         //
         //
@@ -60,9 +69,15 @@ namespace Module10.Unit5.FinalTask1
         /// </summary>
         public double Calculate(params double[] args)
         {
+            _logger.Event(nameof(Calculate), $"Вычисление суммы для аргументов: [{string.Join(", ", args)}]");
+
             RequiredArgsCountExpertiseException.Expertise(MinArgsCount, MaxArgsCount, args);
 
-            return args.Sum();
+            double result = args.Sum();
+
+            _logger.Event(nameof(Calculate), $"Результат: {result}");
+
+            return result;
         }
 
         // Методы-перегрузки:

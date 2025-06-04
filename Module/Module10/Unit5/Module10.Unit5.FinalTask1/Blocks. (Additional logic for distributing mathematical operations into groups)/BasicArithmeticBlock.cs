@@ -16,12 +16,25 @@ namespace Module10.Unit5.FinalTask1
     public class BasicArithmeticBlock : OperationBlock
     {
         /// <summary>
+        /// 
+        /// </summary>
+        private readonly Func<string, ILogger> _loggerFactory;
+
+        public BasicArithmeticBlock(Func<string, ILogger> loggerFactory)
+        {
+            _loggerFactory = loggerFactory;
+            Operations = CreateOperations();
+        }
+
+        /// <summary>
         /// <para>Переопределение свойства типа <see cref="string"/>, которое выполняет</para>
         /// <para>● хранение строкового значение "Названия блока математических операций"</para>
         /// <para>● доступ для получения этого значения</para>
         /// <para>● присваивается значение по умолчанию</para>
         /// </summary>
         public override string BlockName => "basic arithmetic";
+
+        public override Dictionary<string, IMathOperation> Operations { get; }
 
         /// <summary>
         /// <para>Название элемента: Operations | "Реестр математических операций"</para>
@@ -32,12 +45,15 @@ namespace Module10.Unit5.FinalTask1
         /// <para>● доступ для получения содержащихся в словаре Value</para>
         /// <para>● присваивание значения по умолчанию</para>
         /// </summary>
-        public override Dictionary<string, IMathOperation> Operations { get; } =
-            new Dictionary<string, IMathOperation>(StringComparer.OrdinalIgnoreCase)
+        private Dictionary<string, IMathOperation> CreateOperations()
+        {
+            return new Dictionary<string, IMathOperation>(StringComparer.OrdinalIgnoreCase)
             {
-                ["+"] = new NumericAddition(),
-                ["-"] = new NumericSubtraction(),
-                // Место ещё для двух операций: умножения и деления.
+                ["+"] = new NumericAddition(_loggerFactory("Operation")),
+                ["-"] = new NumericSubtraction(_loggerFactory("Operation")),
+                // ["*"] = new NumericMultiplication(_loggerFactory("Operation")),
+                // ["/"] = new NumericDivision(_loggerFactory("Operation"))
             };
+        }
     }
 }

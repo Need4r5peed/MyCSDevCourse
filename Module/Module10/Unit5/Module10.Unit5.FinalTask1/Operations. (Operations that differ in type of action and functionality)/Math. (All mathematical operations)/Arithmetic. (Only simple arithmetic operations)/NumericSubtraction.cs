@@ -19,6 +19,15 @@ namespace Module10.Unit5.FinalTask1
 
         public int MaxArgsCount => 2;
 
+        private readonly ILogger _logger;
+
+        public NumericSubtraction(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public ILogger Logger => _logger;
+
         public double Calculate(double arg)
         {
             throw new NotImplementedException();

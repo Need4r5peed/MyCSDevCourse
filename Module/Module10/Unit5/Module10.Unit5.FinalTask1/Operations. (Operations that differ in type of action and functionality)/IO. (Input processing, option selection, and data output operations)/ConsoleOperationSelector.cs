@@ -98,7 +98,7 @@ namespace Module10.Unit5.FinalTask1
         /// "Выбор блока математических операций".</para>
         /// 
         /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
+        /// <para>Метода.</para>
         /// 
         /// <para>● Концепция, описание, принцип работы элемента:</para>
         /// <para>Метод возвращающего типа, который должен выполнять:</para> 
@@ -121,34 +121,42 @@ namespace Module10.Unit5.FinalTask1
             // Вывод списка доступных блоков
             _logger.Event($"{nameof(BlockSelection)}", "Загрузка блоков.");
             var availableBlockNames = BlockRegistry.GetAvailableBlocks();
+
             Thread.Sleep(1000);
 
             _logger.Event($"{nameof(BlockSelection)}", "Вывод доступных блоков.");
+
             Thread.Sleep(1000);
+
             _writer.WriteMessage("Доступные блоки операций:");
             _writer.WriteAvailableBlocks(availableBlockNames);
 
             // Выбор пользователя через ввод названия блока в консоль
             _logger.Event($"{nameof(BlockSelection)}", "Пользовательский ввод по выбору блока.");
+
             Thread.Sleep(1000);
 
             _writer.WriteMessage("Выберите и введите название блока операций в консоль:");
             var blockNameСhoice = _reader.ReadBlockChoice();
 
             _logger.Event($"{nameof(BlockSelection)}", $"Поиск блока: {blockNameСhoice}");
+
             Thread.Sleep(1000);
 
             // Expertise!
             _logger.Event($"{nameof(BlockSelection)}", $"Поиск исключений для {blockNameСhoice}");
+
             Thread.Sleep(1000);
 
             BlockNotFoundExpertiseException.Expertise(blockNameСhoice, BlockRegistry._blockRegistry);
 
             _logger.Event($"{nameof(BlockSelection)}", $"Блок '{blockNameСhoice}' найден. Выбор корректен.");
+
             Thread.Sleep(1000);
 
             // Возвращаем найденный блок
             _logger.Event($"{nameof(BlockSelection)}", $"Возвращение блока '{blockNameСhoice}'.");
+
             Thread.Sleep(1000);
 
             return BlockRegistry.GetOrCreate(blockNameСhoice);
@@ -163,26 +171,35 @@ namespace Module10.Unit5.FinalTask1
         {
             // 1.
             _logger.Event($"{nameof(OperationSelection)}", "Вывод доступных операций.");
+
             Thread.Sleep(1000);
+
             _writer.WriteMessage($"Доступные операции в блоке '{block.BlockName}':");
             _writer.WriteAvailableOperations(block.Operations.Keys);
 
             // 2.
             _logger.Event($"{nameof(OperationSelection)}", "Пользовательский ввод по выбору операции.");
+ 
             Thread.Sleep(1000);
+
             _writer.WriteMessage($"Выберите в введите название операции из блока '{block.BlockName}':");
             var operationUsersChoice = _reader.ReadOperationChoice();
             _logger.Event("SelectOperation", $"Поиск операции: {operationUsersChoice}");
+
             Thread.Sleep(1000);
 
             // 3. Expertise!
             _logger.Event($"{nameof(OperationSelection)}", $"Поиск исключений для {operationUsersChoice}.");
+
             Thread.Sleep(1000);
+
             OperationNotFoundExpertiseException.Expertise(operationUsersChoice, block);
             _logger.Event("SelectOperation", $"Операция '{operationUsersChoice}' доступна и готова к исполнению.");
+            Console.Out.Flush();
             Thread.Sleep(1000);
 
             _logger.Event($"{nameof(OperationSelection)}", $"Загрузка операции {operationUsersChoice} в память.");
+
             Thread.Sleep(1000);
             // 4. Возвращает найденную операцию
             return block.Operations[operationUsersChoice];
@@ -198,17 +215,21 @@ namespace Module10.Unit5.FinalTask1
             string FormatArgs(object a) => a is double[] array ? $"[{string.Join(", ", array)}]" : a.ToString();
 
             _logger.Event($"{nameof(ArgSelection)}", $"Ввод пользлвателем аргументов.");
+           
             Thread.Sleep(1000);
+
             _writer.WriteMessage($"Введите {operation.MinArgsCount}-{operation.MaxArgsCount} аргументов через пробел:");
             var args = _reader.ReadNumbers();
 
             // Expertise!
             _logger.Event($"{nameof(ArgSelection)}", $"Поиск исключений для {FormatArgs(args)}.");
+            
             Thread.Sleep(1000);
 
             RequiredArgsCountExpertiseException.Expertise(args, operation);
 
             _logger.Event($"{nameof(ArgSelection)}", $"Аргументы {FormatArgs(args)} готовы к использованию.");
+            
             Thread.Sleep(1000);
 
             return args;
@@ -224,6 +245,7 @@ namespace Module10.Unit5.FinalTask1
         public string SavingTheResultSelection(double result, ref int counter)
         {
             _logger.Event($"{nameof(SavingTheResultSelection)}", $"Вывод списка дальнейших действий с результатом {result}.");
+
             Thread.Sleep(1000);
 
             _writer.WriteMessage("Ваши дальнейшие действия:");
@@ -235,7 +257,9 @@ namespace Module10.Unit5.FinalTask1
                 $"5 - Выход из Калькулятора");
 
             _logger.Event($"{nameof(SavingTheResultSelection)}", $"Выбор пользователя о дальнейшем действии с результатом {result}.");
+
             Thread.Sleep(1000);
+
             _writer.WriteMessage("Введите ниже - № дестйивя в консоль:");
             string choice = _reader.ReadChoice();
 

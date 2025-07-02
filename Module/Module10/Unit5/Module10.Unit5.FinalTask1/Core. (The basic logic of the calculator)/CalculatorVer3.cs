@@ -140,7 +140,8 @@ namespace Module10.Unit5.FinalTask1
                 double result = RetryProcedure(
                     () => _writer.CalculateAndDisplayResult(operation, args),
                     nameof(_writer.CalculateAndDisplayResult),
-                    "Вычисление результата"
+                    "Вычисление результата",
+                    continueOnUnexpectedError: true  // Включаем режим continue для неожиданных ошибок
                 );
 
                 // Блок 5: Работа с результатом
@@ -157,6 +158,7 @@ namespace Module10.Unit5.FinalTask1
                     "Запрос на продолжение"
                 );
 
+                // Блок 7: Выход из основного цикла
                 if (!choosing) break;
             }
         }
@@ -195,7 +197,11 @@ namespace Module10.Unit5.FinalTask1
         /// <param name="context">Дополнительный контекст выполнения базовой процедуры | Логирование</param>
         /// 
         /// <returns>Результат выполнения процедуры типа T</returns>
-        private T RetryProcedure<T>(Func<T> basicProcedure, string procedureName, string context)
+        private T RetryProcedure<T>(
+            Func<T> basicProcedure, 
+            string procedureName, 
+            string context, 
+            bool continueOnUnexpectedError = false) // параметр ждя управления поведением при неожиданных ошибках
         {
             while (true)
             {
@@ -203,37 +209,44 @@ namespace Module10.Unit5.FinalTask1
                 {
                     return basicProcedure();
                 }
-                // Исключение о недоступности блока операций с заданным именем
+                // Обработка исключения о недоступности блока операций с заданным именем
                 catch (BlockNotAvailableException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
-                // Исключение об отсутствии фабрики в реестре 
+                // Обработка исключения об отсутствии фабрики в реестре 
                 catch (BlockNotFoundException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
-                // Исключение при недоступности операции с заданным именем
+                // Обработка исключения при недоступности операции с заданным именем
                 catch (OperationNotAvailableException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
-                // Исключение при некорректном количестве аргументов
+                // Обработка исключения при некорректном количестве аргументов
                 catch (InvalidArgumentsException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
-                // Исключение при несоответствии формата ввода
+                // Обработка исключения при несоответствии формата ввода
                 catch (FormatException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
-                // Исключение при неудачном вычислении
+                // Обработка исключения при неудачном вычислении
                 catch (CalculationException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
-                // Исключение при каких-либо других непредвиденных обстоятельствах
+                // Обработка исключения при каких-либо непредвиденных обстоятельствах как "продолжаемых"
+                catch (Exception ex) when (continueOnUnexpectedError)
+                {
+                    _logger.Error($"Исключение: {ex.GetType().Name},\nГде: {procedureName}", ex.Message);
+                    _writer.WriteError($"Критическая ошибка: {ex.Message}");
+                    // Не пробрасываем выше, а продолжаемых цикл
+                }
+                // Обработка исключения при каких-либо других непредвиденных обстоятельствах
                 catch (Exception ex)
                 {
                     _logger.Error($"Исключение: {ex.GetType().Name},\nГде: {procedureName}", ex.Message);

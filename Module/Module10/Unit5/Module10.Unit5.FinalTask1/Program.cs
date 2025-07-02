@@ -20,7 +20,9 @@ namespace Module10.Unit5.FinalTask1
 
                 // Основная логика
                 logger.Event(nameof(Main), "Запуск приложения 'Калькулятор'");
+
                 Thread.Sleep(3000);
+
                 serviceProvider.GetService<Calculator>().Run();
             }
             // Исключение при неинициализации логгера.
@@ -70,6 +72,7 @@ namespace Module10.Unit5.FinalTask1
             {
                 return key switch
                 {
+                    // Через свойство каждого логгера (можно напрямую - через класс LoggerTypes)
                     LoggerTypes.Main => provider.GetService<MainLogger>(),
                     LoggerTypes.Procedure => provider.GetService<ProcedureLogger>(),
                     LoggerTypes.Operation => provider.GetService<OperationLogger>(),

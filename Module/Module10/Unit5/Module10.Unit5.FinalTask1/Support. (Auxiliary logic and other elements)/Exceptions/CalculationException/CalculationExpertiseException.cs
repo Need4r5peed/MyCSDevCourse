@@ -16,6 +16,11 @@ namespace Module10.Unit5.FinalTask1
             if (double.IsNaN(result))
                 throw new CalculationException(operation, args, CalculationErrorType.NaNResult, "Результат не является числом.");
 
+
+            // Проверка для вычитания: если операция — вычитание и результат отрицательный
+            if (operation.Name == "Вычитание")
+                throw new IncompleteOperationException(operation.Name);
+
             // Другие проверки...
 
             return result; // Если всё ок — возвращаем результат

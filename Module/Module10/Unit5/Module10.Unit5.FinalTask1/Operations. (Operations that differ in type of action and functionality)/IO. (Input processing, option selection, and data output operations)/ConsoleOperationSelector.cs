@@ -275,47 +275,56 @@ namespace Module10.Unit5.FinalTask1
                         $"Счётчик итераций {nameof(counter)} = {counter} / не сброшен.\n" +
                         $"Программа калькулятора переходит к следующей итерации №{counter + 1}");
                     return choice;
+
                 case "2":
                     _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
 
+                    counter -= 1;
                     _writer.WriteMessage(
                         $"Результат {result} данной итерации №{counter} не сохранен в память.\n" +
-                        $"Номер данной итерации №{counter} изменён на №{counter -= 1}\n" +
+                        $"Номер итерации изменён на №{counter}\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / сброшен на 1 итерацию.\n" +
                         $"Программа калькулятора переходит к новой итерации №{counter + 1}");
                     return choice;
+
                 case "3":
                     _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
 
                     ClearingTheMemory();
+                    counter = 0;
                     _writer.WriteMessage(
                         $"Все результаты прошлых итераций, в том чесле результат {result} данной итерации №{counter} - \n" +
                         $"были очищены из памяти.\n" +
-                        $"Номер данной итерации №{counter} изменён на №{counter = 0}\n" +
+                        $"Номер итерации изменён на №{counter}\n" +
                         $"Счётчик итераций {nameof(counter)} = {counter} / сброшен на 0.\n" +
                         $"Программа калькулятора переходит к новой итерации №{counter + 1}");
                     counter = 0;
                     return choice;
+
                 case "4":
                     _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
 
                     ClearingTheMemory();
+                    counter = 1;
                     SavingTheResults(counter, result);
                     _writer.WriteMessage(
                         $"Все результаты прошлых итераций были очищены из памяти.\n" +
-                        $"Результат {result} данной итерации №{counter} сохранен в память." +
-                        $"Номер данной итерации №{counter} изменён на №{counter = 1}\n" +
-                        $"Счётчик итераций {nameof(counter)} = {counter} / сброшен до 1.\n" +
+                        $"Результат {result} сохранён как итерация №{counter}.\n" +
+                        $"Счётчик итераций сброшен до №{counter}.\n" +
                         $"Программа калькулятора переходит к новой итерации №{counter + 1}");
                     return choice;
+
                 case "5":
                     _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
 
+                    ClearingTheMemory();
+                    counter = 1;
                     _writer.WriteMessage(
-                        $"Результат {result} итерации №{counter} не будет сохранен в память.\n" +
-                        $"Все результаты прошлых итераций будут очищены из пямяти.\n" +
-                        $"Программа Калькулятора будет завершена.");
+                        $"Результат {result} итерации №{counter} не сохранён в память.\n" +
+                        $"Все результаты прошлых итераций были очищены из памяти.\n" +
+                        $"Программа Калькулятора завершена.");
                     return choice;
+
                 default:
                     _logger.Event($"{nameof(SavingTheResultSelection)}", $"Исполнение варианта {choice}.");
 
@@ -324,10 +333,23 @@ namespace Module10.Unit5.FinalTask1
         }
 
         /// <summary>
+        /// <para>● Название элемента:</para>
+        /// <para><see cref="ShouldContinueSelection"/> |
+        /// "Определение продолжения работы калькулятора".</para>
         /// 
-        /// </summary>
-        /// <param name="selectionOutput"></param>
-        /// <returns></returns>
+        /// <para>● Тип элемента:</para> 
+        /// <para>Метод.</para>
+        /// 
+        /// <para>● Концепция, описание, принцип работы элемента:</para>
+        /// <para>Метод возвращающего типа, который определяет:</para> 
+        /// <list type="number">
+        ///    <item><description>нужно ли продолжать выполнение программы на основе пользовательского выбора;</description></item>
+        ///    <item><description>возвращает true для продолжения (варианты 1-4) или false для выхода (вариант 5).</description></item>
+        /// </list> 
+        /// 
+        /// <param name="selectionOutput">Строка, представляющая выбор пользователя из <see cref="SavingTheResultSelection"/>.</param>
+        /// 
+        /// <returns>Булево значение, указывающее, продолжать ли работу.</returns>
         public bool ShouldContinueSelection(string selectionOutput)
         {
             var response = selectionOutput;

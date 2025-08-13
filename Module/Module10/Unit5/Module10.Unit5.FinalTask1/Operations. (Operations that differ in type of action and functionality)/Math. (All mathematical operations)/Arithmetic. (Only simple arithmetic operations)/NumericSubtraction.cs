@@ -30,17 +30,17 @@ namespace Module10.Unit5.FinalTask1
 
         public double Calculate(double arg)
         {
-            throw new NotImplementedException();
+            throw new IncompleteOperationException(Name);
         }
 
         public double Calculate(double arg1, double arg2)
         {
-            throw new NotImplementedException();
+            throw new IncompleteOperationException(Name);
         }
 
         public double Calculate(params double[] args)
         {
-            throw new NotImplementedException();
+            throw new IncompleteOperationException(Name);
         }
     }
 }

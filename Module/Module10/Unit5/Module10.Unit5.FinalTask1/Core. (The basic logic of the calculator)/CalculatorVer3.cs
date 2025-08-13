@@ -14,7 +14,7 @@ namespace Module10.Unit5.FinalTask1
     /// Основной класс калькулятора. Обрабатывает арифметические и другие операции,
     /// сгруппированные в блоки (OperationBlock).
     /// </summary>
-    public class Calculator
+    public class Calculator2
     {
         /// <summary>
         /// Название элеиента: <see cref="_reader"/> | 
@@ -58,7 +58,7 @@ namespace Module10.Unit5.FinalTask1
         /// "Инициализация необходимых зависимостей калькулятора".
         /// Тип элемента: конструктор.
         /// </summary>
-        public Calculator(
+        public Calculator2(
             IReader reader,
             IWriter writer,
             IOperationSelector selector,
@@ -140,8 +140,7 @@ namespace Module10.Unit5.FinalTask1
                 double result = RetryProcedure(
                     () => _writer.CalculateAndDisplayResult(operation, args),
                     nameof(_writer.CalculateAndDisplayResult),
-                    "Вычисление результата",
-                    continueOnUnexpectedError: true  // Включаем режим continue для неожиданных ошибок
+                    "Вычисление результата"
                 );
 
                 // Блок 5: Работа с результатом
@@ -200,8 +199,7 @@ namespace Module10.Unit5.FinalTask1
         private T RetryProcedure<T>(
             Func<T> basicProcedure, 
             string procedureName, 
-            string context, 
-            bool continueOnUnexpectedError = false) // параметр ждя управления поведением при неожиданных ошибках
+            string context)
         {
             while (true)
             {
@@ -229,6 +227,12 @@ namespace Module10.Unit5.FinalTask1
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                 }
+                // Обработка исключения при ----------------
+                catch (IncompleteOperationException ex)
+                {
+                    CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
+                    return default(T);
+                }
                 // Обработка исключения при несоответствии формата ввода
                 catch (FormatException ex)
                 {
@@ -238,13 +242,6 @@ namespace Module10.Unit5.FinalTask1
                 catch (CalculationException ex)
                 {
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                }
-                // Обработка исключения при каких-либо непредвиденных обстоятельствах как "продолжаемых"
-                catch (Exception ex) when (continueOnUnexpectedError)
-                {
-                    _logger.Error($"Исключение: {ex.GetType().Name},\nГде: {procedureName}", ex.Message);
-                    _writer.WriteError($"Критическая ошибка: {ex.Message}");
-                    // Не пробрасываем выше, а продолжаемых цикл
                 }
                 // Обработка исключения при каких-либо других непредвиденных обстоятельствах
                 catch (Exception ex)

@@ -9,75 +9,201 @@ using System.Diagnostics.Metrics;
 
 namespace Module10.Unit5.FinalTask1
 {
+    #region Enum Description Перечисление ключей для управления блоками процедур калькулятора
+    /// <summary>
+    /// Перечисление ключей для управления блоками процедур калькулятора.
+    /// <para>Определяет этапы выполнения калькулятора и переходы между ними:</para>
+    /// <list type="bullet">
+    ///   <item><description>Управляет выбором блоков, операций, аргументов и результатов.</description></item>
+    ///   <item><description>Обеспечивает обработку повторов и возвратов к определённым этапам.</description></item>
+    /// </list>
+    /// </summary>
+    #endregion
     public enum BlockKey
     {
-        SelectBlock,               // Блок 1: Выбор блока операций
-        SelectOperation,           // Блок 2: Выбор операции
-        ShowPastResults,           // Блок 3: Вывод прошлых результатов
-        InputArguments,            // Блок 4: Ввод аргументов
-        CalculateResult,           // Блок 5: Вычисление результата
-        SaveResult,                // Блок 6: Работа с результатом
-        ContinuePrompt,            // Блок 7: Запрос на продолжение
-        Exit,                      // Выход из цикла
+        SelectBlock,               // Выбор блока операций
+        SelectOperation,           // Выбор конкретной операции
+        ShowPastResults,           // Вывод результатов прошлых итераций
+        InputArguments,            // Ввод аргументов для операции
+        CalculateResult,           // Вычисление результата операции
+        SaveResult,                // Сохранение результата
+        ContinuePrompt,            // Запрос на продолжение работы
+        Exit,                      // Выход из цикла калькулятора
         RetryCurrent,              // Повтор текущего блока
-        ReturnToOperationSelection // Возврат к блоку 2 при IncompleteOperationException
+        ReturnToOperationSelection // Возврат к выбору операции
     }
 
+    #region Class Description "Класс калькулятора для выполнения математических операций"
+    /// <summary>
+    /// Класс калькулятора для выполнения математических операций.
+    /// <para>Реализует основной цикл работы с использованием зависимостей:</para>
+    /// <list type="bullet">
+    ///   <item><description>Управляет выбором блоков, операций и аргументов.</description></item>
+    ///   <item><description>Обрабатывает результаты и логирование.</description></item>
+    ///   <item><description>Обеспечивает повторное выполнение процедур при ошибках.</description></item>
+    /// </list>
+    /// </summary>
+    #endregion
     public class Calculator
     {
-        private readonly IReader _reader;
-        private readonly IWriter _writer;
-        private readonly IOperationSelector _selector;
-        private readonly ILogger _logger;
-        private int repeatNumber = 1;
+        #region Field Description "Интерфейс для чтения пользовательского ввода"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_reader"/> | Интерфейс для чтения пользовательского ввода.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="IReader"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Используется для получения пользовательского ввода.</description></item>
+        ///   <item><description>Инициализируется через конструктор.</description></item>
+        /// </list>
+        /// </summary>
+        #endregion
+        private readonly IReader _reader; // Интерфейс для чтения пользовательского ввода
 
+        #region Field Description "Интерфейс для вывода данных"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_writer"/> | Интерфейс для вывода данных.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="IWriter"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Используется для вывода результатов, ошибок и сообщений.</description></item>
+        ///   <item><description>Инициализируется через конструктор.</description></item>
+        /// </list>
+        /// </summary>
+        #endregion
+        private readonly IWriter _writer; // Интерфейс для вывода данных
+
+        #region Field Description "Интерфейс для выбора процедур"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_selector"/> | Интерфейс для выбора процедур.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="IOperationSelector"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Управляет выбором блоков, операций и аргументов.</description></item>
+        ///   <item><description>Инициализируется через конструктор.</description></item>
+        /// </list>
+        /// </summary>
+        #endregion
+        private readonly IOperationSelector _selector; // Интерфейс для выбора процедур
+
+        #region Field Description "Интерфейс для логирования"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_logger"/> | Интерфейс для логирования.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="ILogger"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Используется для логирования событий и ошибок.</description></item>
+        ///   <item><description>Инициализируется через конструктор.</description></item>
+        /// </list>
+        /// </summary>
+        #endregion
+        private readonly ILogger _logger; // Интерфейс для логирования
+
+        #region Field Description "Счётчик итераций калькулятора"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="repeatNumber"/> | Счётчик итераций калькулятора.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="int"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Хранит номер текущей итерации работы калькулятора.</description></item>
+        ///   <item><description>Инициализируется значением 1 и увеличивается при каждой новой итерации.</description></item>
+        /// </list>
+        /// </summary>
+        #endregion
+        private int repeatNumber = 1; // Счётчик итераций калькулятора
+
+        #region Constructor Description "Конструктор класса"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para>Конструктор класса <see cref="Calculator"/>.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Конструктор.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Инициализирует экземпляр класса <see cref="Calculator"/>:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает и сохраняет зависимости через интерфейсы.</description></item>
+        ///   <item><description>Логирует успешное внедрение зависимостей.</description></item>
+        /// </list>
+        /// </summary>
+        /// <param name="reader">Интерфейс для чтения пользовательского ввода типа <see cref="IReader"/>.</param>
+        /// <param name="writer">Интерфейс для вывода данных типа <see cref="IWriter"/>.</param>
+        /// <param name="selector">Интерфейс для выбора процедур типа <see cref="IOperationSelector"/>.</param>
+        /// <param name="logger">Интерфейс для логирования типа <see cref="ILogger"/>.</param>
+        #endregion
         public Calculator(
             IReader reader,
             IWriter writer,
             IOperationSelector selector,
             ILogger logger)
         {
+            // Сохранение зависимостей
             _reader = reader;
             _writer = writer;
             _selector = selector;
             _logger = logger;
+            // Логирование успешной инициализации
             _logger.Event(
                 $"\n{nameof(Calculator)}",
                 "Запуск конструктора: зависимости успешно внедрены");
         }
 
+        #region Method Description "Основной цикл работы калькулятора"
         /// <summary>
-        /// Название элемента: <see cref="Run"/> | 
-        /// "Основной цикл работы калькулятора".
-        /// Тип элемента: метод.
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод невозвращающего типа, который выполняет:</para> 
-        /// <para><c>1)</c> инициализацию счётчика итераций;</para>
-        /// <para><c>2)</c> последовательное выполнение блоков основных процедур в бесконечном цикле с управлением через ключи;</para>
-        /// <para><c>3)</c> обработку исключений через <see cref="RetryProcedure{T}"/>.</para>
-        /// 
-        /// <para>● Блоки основных процедур элемента:</para>
-        /// <para><c>— Блок #1</c> — Выбор блока математических операций (<see cref="OperationBlock"/>).</para>
-        /// <para><c>— Блок #2</c> — Выбор конкретной математической операции (<see cref="IMathOperation"/>).</para>
-        /// <para><c>— Блок #3</c> — Вывод результатов прошлых итераций (<see cref="ResultOfPreviousIterations"/>).</para>  
-        /// <para><c>— Блок #4</c> — Ввод аргументов (<see cref="double[]"/>).</para> 
-        /// <para><c>— Блок #5</c> — Вычисление результата (<see cref="double"/>).</para> 
-        /// <para><c>— Блок #6</c> — Работа с результатом (<see cref="string"/>).</para> 
-        /// <para><c>— Блок #7</c> — Запрос на продолжение и увеличение счётчика итераций (<see cref="bool"/>).</para> 
-        /// 
-        /// <para>● Условия выхода элемента:</para>
-        /// <para><c>—</c> Пользователь отказался продолжать (<c>choosing == false</c>).</para>
-        /// <para><c>—</c> Необработанное исключение (пробрасывается выше).</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Run"/> | Основной цикл работы калькулятора.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Публичный метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод, выполняющий основной цикл работы калькулятора:</para>
+        /// <list type="number">
+        ///   <item><description>Инициализирует счётчик итераций.</description></item>
+        ///   <item><description>Выполняет последовательные блоки процедур в цикле с управлением через <see cref="BlockKey"/>.</description></item>
+        ///   <item><description>Обрабатывает исключения через метод <see cref="RetryProcedure{T}"/>.</description></item>
+        /// </list>
+        /// <para>Блоки процедур:</para>
+        /// <list type="number">
+        ///   <item><description>Выбор блока операций (<see cref="OperationBlock"/>).</description></item>
+        ///   <item><description>Выбор операции (<see cref="IMathOperation"/>).</description></item>
+        ///   <item><description>Вывод результатов прошлых итераций (<see cref="ResultOfPreviousIterations"/>).</description></item>
+        ///   <item><description>Ввод аргументов (<see cref="double"/>[]).</description></item>
+        ///   <item><description>Вычисление результата (<see cref="double"/>).</description></item>
+        ///   <item><description>Сохранение результата (<see cref="string"/>).</description></item>
+        ///   <item><description>Запрос на продолжение (<see cref="bool"/>).</description></item>
+        /// </list>
+        /// <para>Условия выхода:</para>
+        /// <list type="bullet">
+        ///   <item><description>Пользователь отказался продолжать работу.</description></item>
+        ///   <item><description>Возникло необработанное исключение.</description></item>
+        /// </list>
         /// </summary>
+        #endregion
         public void Run()
         {
+            // Логирование начала работы цикла
             _logger.Event(nameof(Run), "Запуск главного while");
+            // Вывод сообщения о запуске
             _writer.WriteMessage("Запуск Калькулятора");
+            // Задержка для эффекта
             Thread.Sleep(1000);
 
+            // Основной цикл калькулятора
             while (true)
             {
+                // Инициализация переменных для текущей итерации
                 BlockKey nextBlock = BlockKey.SelectBlock;
                 OperationBlock block = default;
                 IMathOperation operation = null;
@@ -85,12 +211,14 @@ namespace Module10.Unit5.FinalTask1
                 double result = 0;
                 string memory = null;
 
+                // Внутренний цикл для обработки блоков
                 while (nextBlock != BlockKey.Exit)
                 {
                     switch (nextBlock)
                     {
                         // Блок 1: Выбор блока операций
                         case BlockKey.SelectBlock:
+                            // Выполнение процедуры выбора блока
                             var (selectedBlock, blockNext) = RetryProcedure(
                                 () => _selector.BlockSelection(),
                                 nameof(_selector.BlockSelection),
@@ -104,6 +232,7 @@ namespace Module10.Unit5.FinalTask1
 
                         // Блок 2: Выбор операции
                         case BlockKey.SelectOperation:
+                            // Выполнение процедуры выбора операции
                             var (op, opNext) = RetryProcedure(
                                 () => _selector.OperationSelection(block),
                                 nameof(_selector.OperationSelection),
@@ -117,6 +246,7 @@ namespace Module10.Unit5.FinalTask1
 
                         // Блок 3: Вывод прошлых результатов
                         case BlockKey.ShowPastResults:
+                            // Проверка необходимости вывода результатов прошлых итераций
                             if (repeatNumber > 1)
                             {
                                 ListingTheResultsOfPastIterations();
@@ -126,6 +256,7 @@ namespace Module10.Unit5.FinalTask1
 
                         // Блок 4: Ввод аргументов
                         case BlockKey.InputArguments:
+                            // Выполнение процедуры ввода аргументов
                             var (arg, argNext) = RetryProcedure(
                                 () => _selector.ArgSelection(operation),
                                 nameof(_selector.ArgSelection),
@@ -139,6 +270,7 @@ namespace Module10.Unit5.FinalTask1
 
                         // Блок 5: Вычисление результата
                         case BlockKey.CalculateResult:
+                            // Выполнение процедуры вычисления
                             var (res, resNext) = RetryProcedure(
                                 () => _writer.CalculateAndDisplayResult(operation, args),
                                 nameof(_writer.CalculateAndDisplayResult),
@@ -152,6 +284,7 @@ namespace Module10.Unit5.FinalTask1
 
                         // Блок 6: Работа с результатом
                         case BlockKey.SaveResult:
+                            // Выполнение процедуры сохранения результата
                             var (mem, memNext) = RetryProcedure(
                                 () => _selector.SavingTheResultSelection(result, ref repeatNumber),
                                 nameof(_selector.SavingTheResultSelection),
@@ -165,6 +298,7 @@ namespace Module10.Unit5.FinalTask1
 
                         // Блок 7: Запрос на продолжение
                         case BlockKey.ContinuePrompt:
+                            // Выполнение процедуры запроса на продолжение
                             var (choosing, chooseNext) = RetryProcedure(
                                 () => _selector.ShouldContinueSelection(memory),
                                 nameof(_selector.ShouldContinueSelection),
@@ -172,14 +306,19 @@ namespace Module10.Unit5.FinalTask1
                             );
                             if (choosing)
                             {
+                                // Увеличение счётчика итераций
                                 repeatNumber += 1;
+                                // Логирование новой итерации
                                 _logger.Event(nameof(Run), $"Итерация: №{repeatNumber}");
+                                // Вывод сообщения о новой итерации
                                 _writer.WriteMessage($"Итерация: №{repeatNumber}");
+                                // Задержка для эффекта
                                 Thread.Sleep(1000);
                             }
                             else
                             {
-                                return; // Выход из внешнего цикла
+                                // Выход из внешнего цикла
+                                return;
                             }
                             nextBlock = chooseNext == BlockKey.ReturnToOperationSelection
                                 ? BlockKey.SelectOperation
@@ -191,10 +330,13 @@ namespace Module10.Unit5.FinalTask1
                             // Остаёмся на текущем блоке
                             break;
 
-                        // Возврат к блоку 2 при IncompleteOperationException
+                        // Возврат к выбору операции
                         case BlockKey.ReturnToOperationSelection:
+                            // Логирование возврата к выбору операции
                             _logger.Event(nameof(Run), "Возврат к выбору операции из-за незавершённой операции");
+                            // Вывод сообщения о возврате
                             _writer.WriteMessage("Операция не завершена. Возврат к выбору операции...");
+                            // Задержка для эффекта
                             Thread.Sleep(500);
                             nextBlock = BlockKey.SelectOperation;
                             break;
@@ -203,89 +345,86 @@ namespace Module10.Unit5.FinalTask1
             }
         }
 
+        #region Method Description "Механизм повторного выполнения процедуры с обработкой исключений"
         /// <summary>
-        /// Название элемента: <see cref="RetryProcedure"/> | 
-        /// "Механизм повторного выполнения основной процедуры с обработкой исключений".
-        /// Тип элемента: метод.
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Обобщённый (generic) метод, возвращающий кортеж результата и ключа следующего блока, который выполняет:</para> 
-        /// <para><c>1)</c> приём обобщённого и основных параметров;</para>
-        /// <para><c>2)</c> базовую процедуру;</para>
-        /// <para><c>3)</c> если возникает ожидаемое исключение (кроме IncompleteOperationException): логирование и повторная попытка;</para>
-        /// <para><c>4)</c> если возникает IncompleteOperationException: логирование и возврат ключа для перехода к выбору операции;</para>
-        /// <para><c>5)</c> если возникает критическое исключение: логирование и проброс выше;</para> 
-        /// <para><c>6)</c> при успешном выполнении базовой процедуры: возврат результата и ключа для продолжения.</para>
-        /// 
-        /// <para>● Составляющие элемента:</para>
-        /// <para><c>— RetryProcedure</c> — название метода.</para>
-        /// <para><c>— T</c> — тип возвращаемых данных.</para>
-        /// <para><c>— <T></c> — обобщённый параметр типа T.</para>  
-        /// <para><c>— Func<T> basicProcedure</c> — 1-й параметр, делегат "Выполняемая основная процедура", возвращающий данные типа T.</para> 
-        /// <para><c>— string procedureName</c> — 2-й параметр "Название основной процедуры" строкового типа string.</para> 
-        /// <para><c>— string context</c> — 3-й параметр "Контекст выполнения основной процедуры" строкового типа string.</para>  
-        /// 
-        /// <para>● Условия выхода элемента:</para>
-        /// <para><c>—</c> Успешное выполнение операции с возвратом результата и ключа.</para>
-        /// <para><c>—</c> IncompleteOperationException с возвратом ключа для перехода к выбору операции.</para>
-        /// <para><c>—</c> Необрабатываемое исключение (пробрасывается выше).</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="RetryProcedure{T}"/> | Механизм повторного выполнения процедуры с обработкой исключений.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватный обобщённый метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод, выполняющий процедуру с обработкой исключений и возвращающий кортеж результата и ключа:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает делегат процедуры и её контекст.</description></item>
+        ///   <item><description>Выполняет процедуру, обрабатывая ожидаемые исключения.</description></item>
+        ///   <item><description>Возвращает результат и ключ для следующего блока или повторяет попытку.</description></item>
+        /// </list>
+        /// <para>Условия выхода:</para>
+        /// <list type="bullet">
+        ///   <item><description>Успешное выполнение процедуры.</description></item>
+        ///   <item><description>Обработка <see cref="IncompleteOperationException"/> с возвратом к выбору операции.</description></item>
+        ///   <item><description>Проброс необрабатываемого исключения.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <typeparam name="T">Тип возвращаемого значения базовой процедуры.</typeparam>
-        /// <param name="basicProcedure">Основная процедура для выполнения.</param>
-        /// <param name="procedureName">Название базовой процедуры | Логирование.</param>
-        /// <param name="context">Дополнительный контекст выполнения базовой процедуры | Логирование.</param>
-        /// 
-        /// <returns>Кортеж из результата выполнения процедуры типа T и ключа следующего блока.</returns>
+        /// <typeparam name="T">Тип возвращаемого значения процедуры.</typeparam>
+        /// <param name="basicProcedure">Делегат процедуры типа <see cref="Func{T}"/>.</param>
+        /// <param name="procedureName">Название процедуры для логирования, тип <see cref="string"/>.</param>
+        /// <param name="context">Контекст выполнения процедуры для логирования, тип <see cref="string"/>.</param>
+        /// <returns>Кортеж из результата типа <typeparamref name="T"/> и ключа <see cref="BlockKey"/>.</returns>
+        #endregion
         private (T result, BlockKey nextBlock) RetryProcedure<T>(
             Func<T> basicProcedure,
             string procedureName,
             string context)
         {
+            // Цикл для повторных попыток выполнения процедуры
             while (true)
             {
                 try
                 {
+                    // Выполнение процедуры
                     T result = basicProcedure();
+                    // Успешное выполнение, возврат результата
                     return (result, BlockKey.RetryCurrent);
                 }
                 catch (BlockNotAvailableException ex)
                 {
+                    // Обработка исключения и повторная попытка
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                    // Повторная попытка текущего блока
                 }
                 catch (BlockNotFoundException ex)
                 {
+                    // Обработка исключения и повторная попытка
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                    // Повторная попытка текущего блока
                 }
                 catch (OperationNotAvailableException ex)
                 {
+                    // Обработка исключения и повторная попытка
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                    // Повторная попытка текущего блока
                 }
                 catch (InvalidArgumentsException ex)
                 {
+                    // Обработка исключения и повторная попытка
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                    // Повторная попытка текущего блока
                 }
                 catch (IncompleteOperationException ex)
                 {
+                    // Обработка исключения с возвратом к выбору операции
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
                     return (default(T), BlockKey.ReturnToOperationSelection);
                 }
                 catch (FormatException ex)
                 {
+                    // Обработка исключения и повторная попытка
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                    // Повторная попытка текущего блока
                 }
                 catch (CalculationException ex)
                 {
+                    // Обработка исключения и повторная попытка
                     CommonConcentratorMoulderOfExceptions(ex, procedureName, context);
-                    // Повторная попытка текущего блока
                 }
                 catch (Exception ex)
                 {
+                    // Логирование и проброс критического исключения
                     _logger.Error($"Исключение: {ex.GetType().Name},\nГде: {procedureName}", ex.Message);
                     _writer.WriteError($"Критическая ошибка: {ex.Message}");
                     throw;
@@ -293,9 +432,32 @@ namespace Module10.Unit5.FinalTask1
             }
         }
 
-        private void CommonConcentratorMoulderOfExceptions(Exception ex, string procedureName, string context)
+        #region Method Description "Обработчик исключений"
+        /// <summary>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="CommonConcentratorMoulderOfExceptions"/> | Обработчик исключений.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватный метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод, выполняющий логирование и вывод сообщений об ошибках:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает исключение, название процедуры и контекст.</description></item>
+        ///   <item><description>Логирует информацию об ошибке через <see cref="_logger"/>.</description></item>
+        ///   <item><description>Выводит сообщение об ошибке через <see cref="_writer"/>.</description></item>
+        /// </list>
+        /// </summary>
+        /// <param name="ex">Исключение типа <see cref="Exception"/>.</param>
+        /// <param name="procedureName">Название процедуры для логирования, тип <see cref="string"/>.</param>
+        /// <param name="context">Контекст выполнения процедуры для логирования, тип <see cref="string"/>.</param>
+        #endregion
+        private void CommonConcentratorMoulderOfExceptions(
+            Exception ex, 
+            string procedureName, 
+            string context)
         {
+            // Логирование ошибки
             _logger.Error($"Исключение: {ex.GetType().Name},\nГде: {procedureName}", ex.Message);
+            // Вывод сообщения об ошибке
             _writer.WriteError(ex.Message);
         }
     }

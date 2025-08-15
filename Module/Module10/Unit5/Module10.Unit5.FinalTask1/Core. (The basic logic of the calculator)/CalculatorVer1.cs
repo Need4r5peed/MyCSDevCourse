@@ -14,7 +14,7 @@
 //    /// Обрабатывает базовые арифметические и другие операции,
 //    /// сгруппированные в блоки (OperationBlock).
 //    /// </summary>
-//    public class Calculator1
+//    public class Calculator1_1
 //    {
 //        private readonly IReader _reader;
 //        private readonly IWriter _writer;
@@ -25,7 +25,7 @@
 //        /// <summary>
 //        /// Конструктор, инициализирующий калькулятор с необходимыми зависимостями
 //        /// </summary>
-//        public Calculator1(
+//        public Calculator1_1(
 //            IReader reader,
 //            IWriter writer,
 //            IOperationSelector selector,

@@ -6,42 +6,67 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
-
+    #region Class Description "Абстрактный класс для блока математических операций"
     /// <summary>
-    /// "Блок математических операций".
-    /// <para>Абстрактный класс, формирующий общую структуру для всех наследуемых классов</para>
+    /// Абстрактный класс для блока математических операций.
+    /// <para>Формирует общую структуру для всех наследуемых классов, определяющих блоки операций:</para>
+    /// <list type="bullet">
+    ///   <item><description>Предоставляет свойства для хранения названия блока и списка операций.</description></item>
+    ///   <item><description>Обеспечивает метод для проверки наличия операции в блоке.</description></item>
+    /// </list>
     /// </summary>
+    #endregion
     public abstract class OperationBlock
     {
+        #region Property Description "Название блока операций"
         /// <summary>
-        /// "Название блока".
-        /// <para>Абстрактный контракт на свойство, которое должно</para>
-        /// <para>● хранить строковое значение "Названия блока математических операций"</para>
-        /// <para>● выполнять доступ для получения этого значения</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="BlockName"/> | Название блока операций.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Абстрактное свойство.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Абстрактное свойство строкового типа <see cref="string"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Хранит строковое значение названия блока математических операций.</description></item>
+        ///   <item><description>Предоставляет доступ только для чтения.</description></item>
+        /// </list>
         /// </summary>
-        public abstract string BlockName { get; }
+        #endregion
+        public abstract string BlockName { get; } // Абстрактное свойство для названия блока
 
+        #region Property Description "Список математических операций блока"
         /// <summary>
-        /// "Список математических операций блока".
-        /// <para>Абстрактный контракт на свойство-словарь, которое должно</para>
-        /// <para>● хранить пару: строковый ключ, IMathOperation значение, формирующих "Список математических операций блока"</para>
-        /// <para>● выполнять доступ для получения этого списка значений</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Operations"/> | Список математических операций блока.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Абстрактное свойство.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Абстрактное свойство типа <see cref="Dictionary{string, IMathOperation}"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Хранит пары ключ-значение, где ключ — строка, а значение — объект типа <see cref="IMathOperation"/>.</description></item>
+        ///   <item><description>Предоставляет доступ только для чтения к списку операций блока.</description></item>
+        /// </list>
         /// </summary>
-        public abstract Dictionary<string, IMathOperation> Operations { get; }
+        #endregion
+        public abstract Dictionary<string, IMathOperation> Operations { get; } // Абстрактное свойство для списка операций
 
+        #region Method Description "Поиск операции по названию"
         /// <summary>
-        /// "Поиск блока по названию".
-        /// <para>Метод, который выполняет:</para>
-        /// <para>1) приём параметра</para>
-        /// <para>2) поиск по ключу</para>
-        /// <para>3) возвращение результата поиска</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="ContainsOperation"/> | Поиск операции по названию.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод возвращающего типа, выполняющий проверку наличия операции в блоке:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает строковый параметр с названием операции.</description></item>
+        ///   <item><description>Проверяет наличие ключа в словаре операций.</description></item>
+        ///   <item><description>Возвращает результат поиска в виде булевого значения.</description></item>
+        /// </list>
         /// </summary>
-        /// <param name="operationName">
-        /// <para>Параметр метода - строковое значение</para>
-        /// <para>● <c>string</c> — string-тип строкового значения</para>
-        /// <para>● <c>operationName</c> — имя параметра "Название математической операции"</para>
-        /// </param>
-        /// <returns>Возвращает результат поиска в виде булевого значения</returns>
-        public bool ContainsOperation(string operationName) => Operations.ContainsKey(operationName);
+        /// <param name="operationName">Строковое значение типа <see cref="string"/>, представляющее название операции.</param>
+        /// <returns>Булево значение типа <see cref="bool"/>, указывающее, содержится ли операция в блоке.</returns>
+        #endregion
+        public bool ContainsOperation(string operationName) => Operations.ContainsKey(operationName); // Проверяет наличие операции в словаре
     }
 }

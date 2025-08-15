@@ -7,163 +7,199 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
+    #region Class Description "Статический класс для реестра блоков математических операций"
     /// <summary>
-    /// "Реестр блоков математических операций".
-    /// <para>Класс,</para>
-    /// <para>● описывающий объект типа словарь</para>
-    /// <para>● данный словарь, в свою очередь, содержит названия блоков операций и инструкции по созданию экземпляров соответствующих блоков</para>
+    /// Статический класс для реестра блоков математических операций.
+    /// <para>Управляет словарем блоков операций и их фабрик, обеспечивая регистрацию и создание экземпляров:</para>
+    /// <list type="bullet">
+    ///   <item><description>Хранит словарь с названиями блоков и инструкциями для их создания.</description></item>
+    ///   <item><description>Обеспечивает потокобезопасное кэширование созданных блоков.</description></item>
+    ///   <item><description>Предоставляет методы для регистрации, создания и получения блоков.</description></item>
+    /// </list>
     /// </summary>
+    #endregion
     public static class BlockRegistry
     {
+        #region Field Description "Словарь блоков математических операций"
         /// <summary>
-        /// "Словарь блоков математических операций".
-        /// <para>Приватное статическое поле-словарь, которое</para>
-        /// <para>● хранит данные ключа типа string словоря "Названия блока математических операций"</para>
-        /// <para>● хранит данные значение типа Func<OperationBlock> "Инструкции по созданию экземпляра блока математических операций"</para>
-        /// <para>● имеет значение по умолчанию: новый пустой словарь с соответствующими типами key и value</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_blockRegistry"/> | Словарь блоков математических операций.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное статическое поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="Dictionary{string, Func{OperationBlock}}"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Хранит пары ключ-значение, где ключ — строка с названием блока, а значение — делегат для создания экземпляра блока.</description></item>
+        ///   <item><description>Инициализируется пустым словарем при создании класса.</description></item>
+        /// </list>
         /// </summary>
-        internal static readonly Dictionary<string, Func<OperationBlock>> _blockRegistry = new Dictionary<string, Func<OperationBlock>>();
+        #endregion
+        internal static readonly Dictionary<string, Func<OperationBlock>> _blockRegistry = new Dictionary<string, Func<OperationBlock>>(); // Словарь для хранения фабрик блоков
 
+        #region Field Description "Потокобезопасный кэш экземпляров блоков"
         /// <summary>
-        /// Что-то там про потокобезопасность...
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_initializedBlocks"/> | Потокобезопасный кэш экземпляров блоков.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное статическое поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="ConcurrentDictionary{string, OperationBlock}"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Хранит созданные экземпляры блоков для повторного использования.</description></item>
+        ///   <item><description>Обеспечивает потокобезопасный доступ к кэшу.</description></item>
+        /// </list>
         /// </summary>
-        internal static readonly ConcurrentDictionary<string, OperationBlock> _initializedBlocks = new();
+        #endregion
+        internal static readonly ConcurrentDictionary<string, OperationBlock> _initializedBlocks = new(); // Потокобезопасный кэш для экземпляров блоков
 
+        #region Field Description "Фабрика для создания логгеров"
         /// <summary>
-        /// 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="_loggerFactory"/> | Фабрика для создания логгеров.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Приватное статическое поле.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Поле типа <see cref="Func{string, ILogger}"/>, которое:</para>
+        /// <list type="number">
+        ///   <item><description>Хранит делегат для создания экземпляров логгеров.</description></item>
+        ///   <item><description>Используется при создании блоков, требующих логирования.</description></item>
+        /// </list>
         /// </summary>
-        private static Func<string, ILogger> _loggerFactory;
+        #endregion
+        private static Func<string, ILogger> _loggerFactory; // Делегат для создания логгеров
 
+        #region Method Description "Инициализация реестра блоков"
         /// <summary>
-        /// <para>Статический конструктор</para>
-        /// <para>● вызывается один раз при первом обращении к классу</para>
-        /// <para>● инициализирует словарь с переданными в него данными</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Initialize"/> | Инициализация реестра блоков.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Статический метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Статический метод, выполняющий инициализацию реестра:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает делегат для создания логгеров.</description></item>
+        ///   <item><description>Сохраняет делегат в поле <see cref="_loggerFactory"/>.</description></item>
+        ///   <item><description>Регистрирует начальный блок операций.</description></item>
+        /// </list>
         /// </summary>
+        /// <param name="loggerFactory">Делегат типа <see cref="Func{string, ILogger}"/> для создания логгеров.</param>
+        #endregion
         public static void Initialize(Func<string, ILogger> loggerFactory)
         {
+            // Сохранение делегата для создания логгеров
             _loggerFactory = loggerFactory;
+            // Регистрация начального блока арифметических операций
             Register<BasicArithmeticBlock>("basic arithmetic");
         }
 
+        #region Method Description "Регистрация блока операций"
         /// <summary>
-        /// <para>"Регистратор" - статиечский обобщённый метод невозвращающего типа, который выполняет:</para>
-        /// <para>1) приём параметров</para>
-        /// <para>2) регистрацию нового типа блока</para>
-        /// <para>Описание метода:</para>
-        /// <para>● <c>Register&lt;T&gt;</c> - указатель обобщённому методу для использования инструкции по подстановке 
-        /// конкретного типа (логической генерации кода с необходимыми параметрами)</para>
-        /// <para>● <c>&lt;T&gt;</c> - Обобщённый (generic) параметр типа T</para>
-        /// <para>● <c>string blockName</c> - Параметр метода типа <see cref="string"/>, передающий "Название блока"</para>
-        /// <para>● <c>where T : OperationBlock, new()</c> - Перечисление ограничений для типа Т:</para>
-        /// <para>1) OperationBlock - ограничение на использование только данного типа <see cref="OperationBlock"/> 
-        /// (должен наследоваться от)</para>
-        /// <para>2) new() - ограничение на применение конструктора без параметров для используемого типа</para>
-        /// <para>Тело метода:</para>
-        /// <para>● <c>_blockRegistry</c> - Хранит "инструкции"(делегаты) создания блоков, 
-        /// тип: Dictionary&lt;string, Func&lt;OperationBlock&gt;&gt;</para>
-        /// <para>● <c>blockName</c> - 	Уникальный идентификатор блока ("Название блока" / ключ словаря), тип: string</para>
-        /// <para>● <c>() =&gt; new T()</c> - Отложенное создание экземпляра через анонимный метод(лямбда-выражение) 
-        /// (Func&lt;OperationBlock&gt;)</para>
-        /// <para>● <c>new T()</c> - Вызов конструктора типа T с ограничением new()</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Register{T}"/> | Регистрация блока операций.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Статический обобщённый метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Статический метод, выполняющий регистрацию нового типа блока операций:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает название блока и регистрирует делегат для его создания.</description></item>
+        ///   <item><description>Поддерживает создание экземпляров через обобщённый тип с ограничениями.</description></item>
+        ///   <item><description>Добавляет делегат в словарь <see cref="_blockRegistry"/>.</description></item>
+        /// </list>
         /// </summary>
-        /// <typeparam name="T">
-        /// <para>Тип обобщённого параметра с ограничениями <see cref="OperationBlock"/>  
-        /// и <see cref="new()"/></para>
-        /// <para>● <c>where T : OperationBlock</c> — с ограничением типа - только <see cref="OperationBlock"/>"</para>
-        /// <para>● <c>where T : new()</c> — с ограничением для конструктора типа - только без параметров"</para>
-        /// </typeparam>
-        /// <param name="blockName">
-        /// <para>Параметр метода - строковое значение</para>
-        /// <para>● <c>string</c> — string-тип строкового значения</para>
-        /// <para>● <c>blockName</c> — имя параметра "Название блока математических операций"</para>
-        /// </param>
+        /// <typeparam name="T">Тип блока операций, наследуемый от <see cref="OperationBlock"/>.</typeparam>
+        /// <param name="blockName">Строковое значение типа <see cref="string"/>, представляющее название блока операций.</param>
+        #endregion
         public static void Register<T>(string blockName) where T : OperationBlock
         {
+            // Регистрация делегата для создания блока
             _blockRegistry[blockName] = () =>
             {
+                // Проверка типа и создание экземпляра с логгером для BasicArithmeticBlock
                 if (typeof(T) == typeof(BasicArithmeticBlock))
                     return new BasicArithmeticBlock(_loggerFactory);
 
+                // Выброс исключения для неподдерживаемых типов
                 throw new InvalidOperationException($"Unsupported block type: {typeof(T)}");
             };
         }
 
+        #region Method Description "Создание экземпляра блока операций"
         /// <summary>
-        /// <para>"Создатель" - статиечский метод возвращающего типа <see cref="OperationBlock"/>, который выполняет:</para>
-        /// <para>1) приём параметра</para>
-        /// <para>2) проверку на исключение</para>
-        /// <para>3) создание экземпляра указанного типа по вызванной инструкции-делегату</para>
-        /// <para>4) возвращение созданного экземпляра указанного типа</para>
-        /// <para>Тело метода:</para>
-        /// <para>● <c>BlockNotFoundExpertiseException.Expertise(blockName, _blockRegistry)</c> - Вызов обрабочика исключений</para>
-        /// <para>● <c>_blockRegistry[blockName]()</c> - Поиск инструкции по индексатору и создание по ней экземпляра</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Create"/> | Создание экземпляра блока операций.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Статический метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Статический метод, выполняющий создание экземпляра блока операций:</para>
+        /// <list type="number">
+        ///   <item><description>Принимает название блока операций.</description></item>
+        ///   <item><description>Проверяет наличие блока в реестре через <see cref="BlockNotFoundExpertiseException"/>.</description></item>
+        ///   <item><description>Создаёт экземпляр блока, вызывая соответствующий делегат.</description></item>
+        /// </list>
         /// </summary>
-        /// <param name="blockName"> 
-        /// <para>Параметр метода - строковое значение</para>
-        /// <para>● <c><see cref="string"/></c> — string-тип строкового значения</para>
-        /// <para>● <c>blockName</c> — имя параметра "Название блока математических операций"</para>
-        /// <para>● <c>where T : OperationBlock</c> — с ограничением типа - только <see cref="OperationBlock"/>"</para>
-        /// </param>
-        /// <returns>Возвращает результат поиска в виде булевого значения</returns>
-        /// <exception cref="BlockNotFoundException">Выбрасывается, если отсутствует блок в реестре.</exception>
-        /// <remarks>
-        /// <b>BlockNotFoundException</b>: Выбрасывается, если отсутствует блок в реестре.
-        /// </remarks>
+        /// <param name="blockName">Строковое значение типа <see cref="string"/>, представляющее название блока операций.</param>
+        /// <returns>Экземпляр блока операций типа <see cref="OperationBlock"/>.</returns>
+        /// <exception cref="BlockNotFoundException">Выбрасывается, если блок отсутствует в реестре.</exception>
+        #endregion
         public static OperationBlock Create(string blockName)
         {
-            //Проверка существование инструкции в реестре
+            // Проверка наличия блока в реестре
             BlockNotFoundExpertiseException.Expertise(blockName, _blockRegistry);
-
-            // 1. Доступ к словарю
-            // 2. Ключ для поиска
-            // 3. Вызов делегата
+            // Создание экземпляра блока через делегат
             return _blockRegistry[blockName]();
         }
 
+        #region Method Description "Получение или создание экземпляра блока операций"
         /// <summary>
-        /// Дополнительная приблуда для кэширования экземпляров
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="GetOrCreate"/> | Получение или создание экземпляра блока операций.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Статический метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Статический метод, выполняющий получение или создание экземпляра блока операций с кэшированием:</para>
+        /// <list type="number">
+        ///   <item><description>Проверяет наличие блока в кэше <see cref="_initializedBlocks"/>.</description></item>
+        ///   <item><description>Если блока нет, создаёт новый экземпляр через реестр.</description></item>
+        ///   <item><description>Сохраняет созданный экземпляр в кэш и возвращает его.</description></item>
+        /// </list>
         /// </summary>
-        /// <param name="blockName"></param>
-        /// <returns></returns>
-        /// <exception cref="BlockNotFoundException"></exception>
+        /// <param name="blockName">Строковое значение типа <see cref="string"/>, представляющее название блока операций.</param>
+        /// <returns>Экземпляр блока операций типа <see cref="OperationBlock"/>.</returns>
+        /// <exception cref="BlockNotFoundException">Выбрасывается, если блок отсутствует в реестре.</exception>
+        #endregion
         public static OperationBlock GetOrCreate(string blockName)
         {
-            // 1. Проверяем, есть ли уже созданный экземпляр блока
+            // Проверка наличия блока в кэше
             if (_initializedBlocks.TryGetValue(blockName, out var block))
-                // Точка возврата №1
-                return block; // Если есть - возвращаем существующий
+                // Возврат существующего экземпляра из кэша
+                return block;
 
-            // 2. Проверяем, зарегистрирована ли фабрика для этого блока
+            // Проверка наличия фабрики в реестре
             BlockNotFoundExpertiseException.Expertise(blockName, _blockRegistry, out var factory);
 
-            // 3. Создаём новый экземпляр через фабрику
-            block = factory(); // Вызываем делегат Func<OperationBlock>
+            // Создание нового экземпляра блока
+            block = factory();
 
-            // 4. Сохраняем в кэш перед возвратом
+            // Сохранение экземпляра в кэш
             _initializedBlocks.TryAdd(blockName, block);
-            // Точка возврата №2
+            // Возврат созданного экземпляра
             return block;
         }
 
+        #region Method Description "Получение списка доступных блоков"
         /// <summary>
-        /// <para>"Информатор" - статиечский метод возвращающего типа <see cref="IEnumerable&lt;string&gt;"/>, 
-        /// где <typeparamref name="T"/> = <see cref="string"/>, 
-        /// которое выполняет</para>
-        /// <para>1) формирование коллекции ключей словаря</para>
-        /// <para>2) возвращение коллекции указанного типа</para>
-        /// <para>Описание метода:</para>
-        /// <para>● <c>IEnumerable&lt;string&gt;</c> - интерфейс, представляющий последовательность строк</para>
-        /// <para>Тело метода:</para>
-        /// <para>● <c>_blockRegistry.Keys</c> - Применение специального свойства Keys для получения 
-        /// Dictionary.KeyCollection, скрытой в IEnumerable&lt;string&gt;</para>
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="GetAvailableBlocks"/> | Получение списка доступных блоков.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Статический метод.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Статический метод, возвращающий коллекцию названий зарегистрированных блоков:</para>
+        /// <list type="bullet">
+        ///   <item><description>Формирует и возвращает коллекцию ключей словаря <see cref="_blockRegistry"/>.</description></item>
+        /// </list>
         /// </summary>
-        /// <param name="~">
-        /// <para>Входных параметров не имеет</para>
-        /// <para>● <c>-</c></para>
-        /// <para>● <c>-</c></para>
-        /// <para>● <c>-</c></para>
-        /// </param>
-        /// <returns>Возвращает сформированную коллекцию ключей словаря (все зарегистрированные имена блоков)</returns>
-        public static IEnumerable<string> GetAvailableBlocks() => _blockRegistry.Keys;
+        /// <returns>Коллекция названий блоков типа <see cref="IEnumerable{string}"/>.</returns>
+        #endregion
+        public static IEnumerable<string> GetAvailableBlocks() => _blockRegistry.Keys; // Возвращает коллекцию ключей словаря
     }
 }

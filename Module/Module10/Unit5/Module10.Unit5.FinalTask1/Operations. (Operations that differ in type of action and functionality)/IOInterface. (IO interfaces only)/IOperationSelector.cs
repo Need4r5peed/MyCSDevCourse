@@ -7,140 +7,113 @@ using static Module10.Unit5.FinalTask1.ParameterOrder;
 
 namespace Module10.Unit5.FinalTask1
 {
+    #region Interface Description "Интерфейс для управления выбором процедур калькулятора"
     /// <summary>
-    /// Интерфейс для управления выбором процедур калькулятора
+    /// Интерфейс для управления выбором процедур калькулятора.
+    /// <para>Определяет контракты для выбора блоков операций, математических операций, аргументов и вариантов сохранения результатов:</para>
+    /// <list type="bullet">
+    ///   <item><description>Обеспечивает выбор блока операций и конкретной операции.</description></item>
+    ///   <item><description>Позволяет выбирать аргументы для операций.</description></item>
+    ///   <item><description>Управляет сохранением результатов и продолжением работы калькулятора.</description></item>
+    /// </list>
     /// </summary>
+    #endregion
     public interface IOperationSelector
     {
-        //Контракты на методы:
-
+        #region Method Description "Выбор блока математических операций"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="BlockSelection"/> |
-        /// "Выбор блока математических операций".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="BlockSelection"/> | Выбор блока математических операций.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод возвращающего типа, предназначенный для выбора блока операций:</para>
         /// <list type="number">
-        ///    <item><description>процедуру по выбору блока;</description></item>
-        ///    <item><description>возврат выбранного блока операций.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Выполняет процедуру выбора блока операций.</description></item>
+        ///   <item><description>Возвращает выбранный блок операций.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="~">
-        /// <para>Входных параметров не имеет</para>
-        /// </param>
-        /// 
-        /// <returns>Результат выбранных и найденных данных соответствующего типа <see cref="OperationBlock"/></returns>
+        /// <returns>Выбранный блок операций типа <see cref="OperationBlock"/>.</returns>
+        #endregion
         OperationBlock BlockSelection();
 
+        #region Method Description "Выбор математической операции"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="OperationSelection"/> |
-        /// "Выбор математической операции".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="OperationSelection"/> | Выбор математической операции.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод возвращающего типа, предназначенный для выбора математической операции:</para>
         /// <list type="number">
-        ///    <item><description>приём параметра;</description></item>
-        ///    <item><description>процедуру по выбору операции;</description></item>
-        ///    <item><description>возврат выбранной операции.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Принимает параметр, представляющий блок операций.</description></item>
+        ///   <item><description>Выполняет процедуру выбора операции.</description></item>
+        ///   <item><description>Возвращает выбранную операцию.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="block">
-        /// <para><c>-</c> единственный параметр, запрашивающий данные о "Блоке математических операций" типа <see cref="OperationBlock"/>.</para>
-        /// </param>
-        /// 
-        /// <returns>Результат выбранных и найденных данных соответствующего типа <see cref="IMathOperation"/></returns>
+        /// <param name="block">Блок математических операций типа <see cref="OperationBlock"/>.</param>
+        /// <returns>Выбранная математическая операция типа <see cref="IMathOperation"/>.</returns>
+        #endregion
         IMathOperation OperationSelection(OperationBlock block);
 
+        #region Method Description "Выбор аргументов для операции"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="ArgSelection"/> |
-        /// "Выбор аргументов".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="ArgSelection"/> | Выбор аргументов для операции.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод возвращающего типа, предназначенный для выбора аргументов для операции:</para>
         /// <list type="number">
-        ///    <item><description>приём параметра;</description></item>
-        ///    <item><description>процедуру по выбору аргументов;</description></item>
-        ///    <item><description>возврат выбранных аргументов.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Принимает параметр, представляющий математическую операцию.</description></item>
+        ///   <item><description>Выполняет процедуру выбора аргументов.</description></item>
+        ///   <item><description>Возвращает массив выбранных аргументов.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="operation">
-        /// <para><c>-</c> единственный параметр, запрашивающий данные о "Математической операции" типа <see cref="IMathOperation"/>.</para>
-        /// </param>
-        /// 
-        /// <returns>Результат выбранных и найденных данных соответствующего типа <see cref="double[]"/></returns>
+        /// <param name="operation">Математическая операция типа <see cref="IMathOperation"/>.</param>
+        /// <returns>Массив аргументов типа <see cref="double"/>[].</returns>
+        #endregion
         double[] ArgSelection(IMathOperation operation);
 
+        #region Method Description "Выбор варианта сохранения результата вычисления"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="ArgSelection"/> |
-        /// "Выбор варианта сохранения результата вычислений прошедшей математечской операции".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="SavingTheResultSelection"/> | Выбор варианта сохранения результата вычисления.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод возвращающего типа, предназначенный для выбора варианта сохранения результата:</para>
         /// <list type="number">
-        ///    <item><description>приём двух параметров;</description></item>
-        ///    <item><description>процедуру по выбору варианта сохранения;</description></item>
-        ///    <item><description>возврат выбранного варианта, а также одного из параметров.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Принимает результат операции и номер итерации.</description></item>
+        ///   <item><description>Выполняет процедуру выбора варианта сохранения.</description></item>
+        ///   <item><description>Возвращает строковое значение выбранного варианта и обновляет номер итерации.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="result">
-        /// <para><c>-</c> 1-й параметр, запрашивающий данные о "Результате операции" типа <see cref="double"/>.</para>
-        /// </param>
-        /// <param name="counter">
-        /// <para><c>-</c> 2-й параметр, запрашивающий данные о "Номере итерации", 
-        /// передаваемого поссылке (<see langword="ref"/>), типа <see cref="int"/>.</para>
-        /// </param>
-        /// 
-        /// <returns>Результат выбранных данных соответствующего типа <see cref="string"/>, 
-        /// а также данные параметра типа <see langword="ref"/></returns>
-        string SavingTheResultSelection(double result, ref int counter);
+        /// <param name="result">Результат операции типа <see cref="double"/>.</param>
+        /// <param name="counter">Номер итерации типа <see cref="int"/>, передаваемый по ссылке (<see langword="ref"/>).</param>
+        /// <returns>Строковое значение типа <see cref="string"/>, представляющее выбранный вариант сохранения.</returns>
+        #endregion
+        string SavingTheResultSelection(
+            double result, 
+            ref int counter);
 
+        #region Method Description "Выбор варианта продолжения работы калькулятора"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="ShouldContinueSelection"/> |
-        /// "Выбор вариант продолжения работы калькулятора".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="ShouldContinueSelection"/> | Выбор варианта продолжения работы калькулятора.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод возвращающего типа, предназначенный для определения продолжения работы калькулятора:</para>
         /// <list type="number">
-        ///    <item><description>приём параметра;</description></item>
-        ///    <item><description>процедуру по выбору варианта;</description></item>
-        ///    <item><description>возврат выбранного варианта.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Принимает параметр, представляющий выбор варианта сохранения результата.</description></item>
+        ///   <item><description>Выполняет процедуру выбора продолжения работы.</description></item>
+        ///   <item><description>Возвращает булево значение, указывающее, продолжать ли работу.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="selectionOutput">
-        /// <para><c>-</c> единственный параметр, запрашивающий данные о "Выборе варианта сохранения результата" типа <see cref="string"/>.</para>
-        /// </param>
-        /// 
-        /// <returns>Результат выбранных данных соответствующего типа <see cref="bool"/></returns>
+        /// <param name="selectionOutput">Выбор варианта сохранения результата типа <see cref="string"/>.</param>
+        /// <returns>Булево значение типа <see cref="bool"/>, указывающее, продолжать ли работу калькулятора.</returns>
+        #endregion
         bool ShouldContinueSelection(string selectionOutput);
     }
 }

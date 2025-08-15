@@ -6,71 +6,72 @@ using System.Threading.Tasks;
 
 namespace Module10.Unit5.FinalTask1
 {
-
+    #region Interface Description "Интерфейс регистратора событий"
     /// <summary>
-    /// Интерфейс Регистратора событий | создаёт контракты для для записи или вывода 
-    /// данных о событиях работы системы и её ошибках
+    /// Интерфейс регистратора событий.
+    /// <para>Создаёт контракты для записи или вывода данных о событиях работы системы и её ошибках:</para>
+    /// <list type="bullet">
+    ///   <item><description>Определяет свойство для хранения типа регистратора.</description></item>
+    ///   <item><description>Определяет методы для логирования событий и ошибок.</description></item>
+    /// </list>
     /// </summary>
+    #endregion
     public interface ILogger
     {
+        #region Property Description "Тип регистратора событий"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="Type"/> |
-        /// "Тип регистратора событий".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт свойства.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Cвойство строковго типа <see cref="string"/>, которое должно будет:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Type"/> | Тип регистратора событий.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт свойства.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Свойство строкового типа <see cref="string"/>, предназначенное для:</para>
         /// <list type="number">
-        ///    <item><description>выполнять хранение данных;</description></item>
-        ///    <item><description>и предоставлять доступ для чтения этих данных.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Хранения данных о типе регистратора событий.</description></item>
+        ///   <item><description>Предоставления доступа к этим данным только для чтения.</description></item>
+        /// </list>
         /// </summary>
+        #endregion
         string Type { get; }
 
+        #region Method Description "Регистрация события о работе системы."
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="Event"/> |
-        /// "Регистрация события о работе системы".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод не возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Event"/> | Регистрация события о работе системы.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод не возвращающего типа, предназначенный для:</para>
         /// <list type="number">
-        ///    <item><description>процедуру по получению данных;</description></item>
-        ///    <item><description>процедуру по записи или выводу данных.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Получения данных о событии в системе.</description></item>
+        ///   <item><description>Записи или вывода данных о событии.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="nameOperation">Строковый параметр типа <see cref="string"/> "Название операции"</param>
-        /// <param name="messageEvent">Строковый параметр типа <see cref="string"/> "Сообщение о событии в системе"</param>
-        void Event(string nameOperation, string messageEvent);
+        /// <param name="nameOperation">Строковый параметр типа <see cref="string"/>, представляющий название операции.</param>
+        /// <param name="messageEvent">Строковый параметр типа <see cref="string"/>, содержащий сообщение о событии в системе.</param>
+        #endregion
+        void Event(
+            string nameOperation, 
+            string messageEvent);
 
+        #region Method Description "Регистрация события об ошибках в системе"
         /// <summary>
-        /// <para>● Название элеиента:</para>
-        /// <para><see cref="Error"/> |
-        /// "Регистрация события об ошибках в системе".</para>
-        /// 
-        /// <para>● Тип элемента:</para> 
-        /// <para>контракт метода.</para>
-        /// 
-        /// <para>● Концепция, описание, принцип работы элемента:</para>
-        /// <para>Метод не возвращающего типа, который должен будет выполнять:</para> 
+        /// <para><b>ℹ️ Название элемента:</b></para>
+        /// <para><see cref="Error"/> | Регистрация события об ошибках в системе.</para>
+        /// <para><b>ℹ️ Тип элемента:</b></para>
+        /// <para>Контракт метода.</para>
+        /// <para><b>ℹ️ Описание:</b></para>
+        /// <para>Метод не возвращающего типа, предназначенный для:</para>
         /// <list type="number">
-        ///    <item><description>процедуру по получению данных;</description></item>
-        ///    <item><description>процедуру по записи или выводу данных.</description></item>
-        /// </list> 
-        /// 
+        ///   <item><description>Получения данных об ошибке в системе.</description></item>
+        ///   <item><description>Записи или вывода данных об ошибке.</description></item>
+        /// </list>
         /// </summary>
-        /// 
-        /// <param name="nameOperation">Строковый параметр типа <see cref="string"/> "Название операции"</param>
-        /// <param name="messageError">Строковый параметр типа <see cref="string"/> "Сообщение об ошибке в системе"</param>
-        void Error(string nameOperation, string messageError);
+        /// <param name="nameOperation">Строковый параметр типа <see cref="string"/>, представляющий название операции.</param>
+        /// <param name="messageError">Строковый параметр типа <see cref="string"/>, содержащий сообщение об ошибке в системе.</param>
+        #endregion
+        void Error(
+            string nameOperation, 
+            string messageError);
     }
 }

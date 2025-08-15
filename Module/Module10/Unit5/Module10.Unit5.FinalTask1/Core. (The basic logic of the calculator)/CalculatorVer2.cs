@@ -14,7 +14,7 @@
 //    /// Основной класс калькулятора. Обрабатывает арифметические и другие операции,
 //    /// сгруппированные в блоки (OperationBlock).
 //    /// </summary>
-//    public class Calculator2
+//    public class Calculator1_2
 //    {
 //        /// <summary>
 //        /// Поле-интерфейс для чтения ввода пользователя
@@ -44,7 +44,7 @@
 //        /// <summary>
 //        /// Конструктор, инициализирующий калькулятор с необходимыми зависимостями
 //        /// </summary>
-//        public Calculator2(
+//        public Calculator1_2(
 //            IReader reader,
 //            IWriter writer,
 //            IOperationSelector selector,
@@ -96,7 +96,7 @@
 //                    try
 //                    {
 //                        // Пользователь выбирает блок операций
-//                        block = _selector.BlockSelection(1);
+//                        block = _selector.BlockSelection();
 //                        break;
 //                    }
 //                    // Исключение о недоступности блока операций
